@@ -8,71 +8,228 @@
 
 ## Table of Contents
 
-1. [Repository Status](#repository-status)
-2. [Expected Architecture](#expected-architecture)
-3. [Development Workflow](#development-workflow)
-4. [Code Conventions](#code-conventions)
-5. [Key Components](#key-components)
-6. [Testing Strategy](#testing-strategy)
-7. [Dependencies & Tools](#dependencies--tools)
-8. [Common Tasks](#common-tasks)
-9. [Troubleshooting](#troubleshooting)
+1. [Language Requirements](#language-requirements)
+2. [Repository Status](#repository-status)
+3. [Expected Architecture](#expected-architecture)
+4. [Development Workflow](#development-workflow)
+5. [KB Frontend UI Documentation Workflow](#kb-frontend-ui-documentation-workflow)
+6. [Code Conventions](#code-conventions)
+7. [Key Components](#key-components)
+8. [Testing Strategy](#testing-strategy)
+9. [Dependencies & Tools](#dependencies--tools)
+10. [Common Tasks](#common-tasks)
+11. [Troubleshooting](#troubleshooting)
+
+---
+
+## Language Requirements
+
+**项目语言规范 / Project Language Standards**
+
+### 对话语言 / Communication Language
+
+- **AI 助手与用户的对话必须使用中文**
+- All conversations between AI assistants and users must be conducted in Chinese
+- 问题讨论、建议、解释等都应使用中文
+
+### 代码注释与文档 / Code Comments and Documentation
+
+- **所有代码注释必须使用中文**
+- **所有文档字符串 (docstrings) 必须使用中文**
+- **README、文档文件等说明性内容必须使用中文**
+- 变量名、函数名、类名等标识符应使用英文（符合 Python 规范）
+- Git 提交信息可以使用中文或英文
+
+### 示例 / Examples
+
+```python
+from typing import List, Dict, Optional
+import numpy as np
+
+
+def retrieve_documents(
+    query: str,
+    top_k: int = 5,
+    similarity_threshold: float = 0.7
+) -> List[Dict[str, any]]:
+    """检索与查询相关的文档。
+
+    根据给定的查询字符串，从向量数据库中检索最相关的文档。
+    使用余弦相似度进行排序，并返回得分最高的文档。
+
+    参数:
+        query: 查询字符串
+        top_k: 返回的文档数量
+        similarity_threshold: 最小相似度阈值
+
+    返回:
+        包含文档内容和元数据的字典列表
+
+    异常:
+        ValueError: 当查询为空或 top_k 无效时
+
+    示例:
+        >>> docs = retrieve_documents("什么是 RAG？", top_k=3)
+        >>> len(docs) <= 3
+        True
+    """
+    if not query:
+        raise ValueError("查询不能为空")
+
+    # 实现检索逻辑
+    # TODO: 添加向量嵌入生成
+    # TODO: 执行相似度搜索
+    pass
+```
+
+### 配置文件 / Configuration Files
+
+配置文件（YAML、JSON等）中的键名使用英文，注释和描述使用中文：
+
+```yaml
+# 模型配置
+model_config:
+  embedding_model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  dimension: 384  # 嵌入向量维度
+  normalize: true  # 是否归一化向量
+
+# 检索配置
+retrieval_config:
+  top_k: 5  # 返回文档数量
+  similarity_metric: "cosine"  # 相似度计算方式：cosine, euclidean, dot_product
+```
+
+### 重要提醒 / Important Notes
+
+- ✅ **必须做**: 所有注释、文档、对话使用中文
+- ✅ **推荐做**: Git 提交信息使用中文，便于团队理解
+- ❌ **不要做**: 代码标识符（变量名、函数名、类名）使用中文
+- ❌ **不要做**: 与用户对话时使用英文
 
 ---
 
 ## Repository Status
 
-**Current State**: Initial setup phase
-**Branch**: `claude/claude-md-mhy2yxh8uoqw1sn3-01FxEHLkfYoJX6JXWkLDhCM8`
+**Current State**: 功能完整的 RAG 系统 (Fully Functional RAG System)
+**Version**: 2.1.0
+**Branch**: `claude/claude-md-mhy48gl18qidu2w9-01RjkXCxeamU1fV2631u67h7`
 
-This repository is in its initial stages. The following sections outline the expected structure and conventions to follow.
+**已实现的功能 (Implemented Features):**
+- ✅ 核心 RAG 引擎 (基于 LangChain + LangGraph)
+- ✅ Ollama LLM 集成 (qwen2.5:7b + bge-m3 embeddings)
+- ✅ Qdrant 向量数据库集成
+- ✅ 文档摄取管道 (加载器、分块器、向量化器)
+- ✅ 知识库管理系统
+- ✅ REST API 接口 (FastAPI)
+- ✅ Web UI 界面 (Streamlit)
+- ✅ 完整的测试套件
+- ✅ 调试和性能分析工具
+- ✅ 日志系统和监控
+
+**项目文件结构 (Current Structure):**
+- `rag5/` - 主要源代码
+- `tests/` - 测试套件
+- `scripts/` - 工具脚本
+- `examples/` - 使用示例
+- `docs/` - 文档
+- `kb-frontend-ui/` - 前端 UI 设计文档
+- `data/`, `text/` - 数据目录
+- `README.md` - 完整的项目文档
+- `requirements.txt` - Python 依赖
+- `setup.py` - 包配置
 
 ---
 
-## Expected Architecture
+## 实际架构 (Actual Architecture)
 
-### Project Structure
+### 项目结构 (Project Structure)
 
 ```
 rag5-simplified-001/
-├── src/                      # Source code
-│   ├── embeddings/          # Embedding generation modules
-│   ├── retrieval/           # Document retrieval logic
-│   ├── generation/          # LLM generation interface
-│   ├── vectorstore/         # Vector database integration
-│   ├── preprocessing/       # Document preprocessing utilities
-│   └── main.py             # Main application entry point
-├── tests/                   # Test suite
-│   ├── unit/               # Unit tests
-│   ├── integration/        # Integration tests
-│   └── fixtures/           # Test data and fixtures
-├── data/                    # Data directory
-│   ├── documents/          # Source documents
-│   ├── processed/          # Preprocessed documents
-│   └── vectors/            # Vector embeddings storage
-├── config/                  # Configuration files
-│   ├── model_config.yaml   # Model configurations
-│   └── retrieval_config.yaml # Retrieval parameters
-├── notebooks/               # Jupyter notebooks for experiments
-├── scripts/                 # Utility scripts
-├── docs/                    # Documentation
-├── requirements.txt         # Python dependencies
-├── setup.py                # Package setup
-├── .gitignore              # Git ignore rules
-├── README.md               # Project documentation
-├── CLAUDE.md               # This file
-└── LICENSE                 # License file
+├── rag5/                       # 主要源代码包
+│   ├── __init__.py            # 包入口，延迟导入优化
+│   ├── config/                # 配置管理
+│   │   ├── settings.py        # 设置加载
+│   │   ├── loader.py          # 配置加载器
+│   │   └── validator.py       # 配置验证
+│   ├── core/                  # 核心模块
+│   │   ├── agent/             # RAG Agent 实现
+│   │   ├── knowledge_base/    # 知识库管理
+│   │   └── prompts/           # 提示词模板
+│   ├── ingestion/             # 数据摄取模块
+│   │   ├── loaders/           # 文档加载器 (PDF, TXT, etc.)
+│   │   ├── splitters/         # 文本分块器
+│   │   ├── vectorizers/       # 向量化器
+│   │   └── pipeline.py        # 摄取流水线
+│   ├── tools/                 # 工具系统
+│   │   ├── search/            # 向量搜索工具
+│   │   ├── embeddings/        # 嵌入生成工具
+│   │   ├── database/          # 数据库工具
+│   │   └── registry.py        # 工具注册表
+│   ├── interfaces/            # 接口层
+│   │   ├── api/               # REST API (FastAPI)
+│   │   └── ui/                # Web UI (Streamlit)
+│   └── utils/                 # 工具函数
+│       ├── logger.py          # 日志系统
+│       ├── monitoring.py      # 监控工具
+│       └── security.py        # 安全工具
+├── tests/                     # 测试套件
+│   ├── test_config/           # 配置测试
+│   ├── test_core/             # 核心功能测试
+│   ├── test_ingestion/        # 摄取模块测试
+│   ├── test_tools/            # 工具测试
+│   ├── test_interfaces/       # 接口测试
+│   ├── test_integration/      # 集成测试
+│   ├── test_performance/      # 性能测试
+│   └── test_utils/            # 工具函数测试
+├── scripts/                   # 工具脚本
+│   ├── ingest.py              # 文档摄取脚本
+│   ├── run_api.py             # API 服务器启动
+│   ├── run_ui.py              # UI 启动脚本
+│   ├── kb_manager.py          # 知识库管理
+│   ├── debug_retrieval.py     # 检索调试
+│   ├── test_e2e.py            # 端到端测试
+│   └── validate_*.py          # 验证脚本
+├── examples/                  # 使用示例
+│   ├── kb_management/         # 知识库管理示例
+│   └── analyze_*.py           # 分析脚本示例
+├── kb-frontend-ui/            # 前端 UI 设计文档
+│   ├── design.md              # UI 设计文档
+│   ├── requirements.md        # UI 需求文档
+│   └── tasks.md               # UI 任务清单
+├── data/                      # 数据存储目录
+├── text/                      # 文本数据目录
+├── docs/                      # 文档目录
+├── requirements.txt           # Python 依赖
+├── setup.py                   # 包安装配置
+├── setup_models.sh            # 模型安装脚本
+├── .env.example               # 环境变量示例
+├── .gitignore                 # Git 忽略规则
+├── README.md                  # 项目文档 (中英双语)
+└── CLAUDE.md                  # AI 助手指南 (本文件)
 ```
 
-### Technology Stack (Expected)
+### 技术栈 (Technology Stack)
 
-- **Language**: Python 3.9+
-- **Embeddings**: sentence-transformers, OpenAI embeddings, or similar
-- **Vector Store**: FAISS, Pinecone, Chroma, or Weaviate
-- **LLM Interface**: OpenAI API, Anthropic API, or local models
-- **Framework**: LangChain or custom implementation
-- **Testing**: pytest
-- **Documentation**: Sphinx or MkDocs
+**实际使用的技术：**
+
+- **语言 (Language)**: Python 3.9+
+- **LLM 模型 (LLM)**: Ollama (qwen2.5:7b)
+- **嵌入模型 (Embeddings)**: Ollama (bge-m3)
+- **向量数据库 (Vector Store)**: Qdrant
+- **编排框架 (Orchestration)**: LangChain + LangGraph
+- **API 框架 (API)**: FastAPI
+- **UI 框架 (UI)**: Streamlit
+- **文档处理 (Document Processing)**: pypdf, unstructured
+- **测试 (Testing)**: pytest, pytest-cov, pytest-asyncio
+- **配置管理 (Config)**: python-dotenv
+- **HTTP 客户端 (HTTP)**: httpx, requests
+
+**部署特点：**
+- 🏠 **本地优先 (Local-First)**: 所有组件本地运行
+- 🔒 **无外部依赖 (No External Dependencies)**: 不需要 OpenAI/Anthropic API
+- 🚀 **快速部署 (Quick Deploy)**: Docker + 脚本自动化
+- 🇨🇳 **中文优化 (Chinese Optimized)**: 专门优化的中文处理
 
 ---
 
@@ -115,6 +272,144 @@ rag5-simplified-001/
 5. Push to remote: `git push -u origin <branch-name>`
 6. Create PR with descriptive title and summary
 7. Address review feedback
+
+---
+
+## KB Frontend UI Documentation Workflow
+
+### ⚠️ 重要规则 / IMPORTANT RULES
+
+**当处理知识库前端 UI 相关任务时，必须遵守以下严格规则：**
+
+#### 1. 文档结构 / Document Structure
+
+`kb-frontend-ui/` 目录包含三个相互关联的核心文档：
+
+```
+kb-frontend-ui/
+├── requirements.md    # 需求文档 - 定义所有功能需求
+├── design.md          # 设计文档 - 详细的架构和实现设计
+└── tasks.md           # 任务清单 - 可执行的任务列表
+```
+
+#### 2. 文档关系 / Document Relationships
+
+- **requirements.md**: 包含 15 个需求（Requirement 1-15），每个需求都有用户故事和验收标准
+- **design.md**: 基于需求文档，提供详细的技术设计、组件接口、代码示例
+- **tasks.md**: 将需求和设计拆分成可执行的任务，每个任务关联到具体的需求
+
+**关系流程**:
+```
+requirements.md (定义需求)
+      ↓
+design.md (设计实现方案)
+      ↓
+tasks.md (拆分为可执行任务)
+      ↓
+实际代码实现
+```
+
+#### 3. 工作流程规则 / Workflow Rules
+
+**🔴 严格遵守以下规则：**
+
+1. **只执行 tasks.md 中列出的任务**
+   - 不要添加额外的功能
+   - 不要实现未在 tasks.md 中列出的特性
+   - 不要"优化"或"改进"已完成的任务
+
+2. **按照 tasks.md 的顺序执行**
+   - 每个任务都有明确的子任务列表
+   - 完成所有子任务后才标记任务为完成
+   - 不要跳过任务或改变执行顺序（除非用户明确要求）
+
+3. **不要修改这三个文档**
+   - requirements.md、design.md、tasks.md 在用户不要求的情况下**不得修改**
+   - 只能更新 tasks.md 中的任务状态（`[ ]` → `[x]`）
+   - 可以添加任务完成说明（如额外实现的功能）
+
+4. **参考设计文档实现**
+   - design.md 提供了详细的代码示例和组件接口
+   - 实现时应该参考设计文档中的结构和模式
+   - 保持与设计文档的一致性
+
+5. **验证需求满足**
+   - 每完成一个任务，对照 requirements.md 验证是否满足验收标准
+   - 确保实现的功能符合用户故事描述
+
+#### 4. 任务执行流程 / Task Execution Flow
+
+当用户要求实现某个任务时：
+
+```
+1. 读取 tasks.md，找到对应的任务
+   ↓
+2. 读取 requirements.md，理解相关需求的验收标准
+   ↓
+3. 读取 design.md，查看详细的设计和代码示例
+   ↓
+4. 严格按照任务清单中的子任务列表执行
+   ↓
+5. 实现所有子任务
+   ↓
+6. 测试功能是否满足验收标准
+   ↓
+7. 更新 tasks.md，标记任务为已完成 ([x])
+   ↓
+8. 提交代码并推送
+```
+
+#### 5. 示例 / Example
+
+**❌ 错误做法：**
+```
+用户: 现在来完成任务 #12
+AI: 我看到任务 #12 是实现工具函数。我还会额外添加一些有用的功能，
+    比如数据验证、缓存机制、性能监控...
+```
+
+**✅ 正确做法：**
+```
+用户: 现在来完成任务 #12
+AI: 我会严格按照 tasks.md 中任务 #12 的子任务列表执行：
+    1. 创建 pages/knowledge_base/components.py
+    2. 实现 format_datetime 函数
+    3. 实现 format_file_size 函数
+    4. 实现 safe_api_call 错误处理包装器
+    5. 实现用户反馈函数
+    6. 实现输入验证函数
+
+    完成后我会测试所有功能并更新 tasks.md。
+```
+
+#### 6. 文档更新规则 / Documentation Update Rules
+
+**可以做的：**
+- ✅ 更新 tasks.md 中的任务状态（`[ ]` → `[x]`）
+- ✅ 在已完成的任务下添加完成说明（如果实现了额外的功能）
+- ✅ 更新 CLAUDE.md（本文件）
+
+**不能做的：**
+- ❌ 修改 requirements.md 的需求定义
+- ❌ 修改 design.md 的设计方案
+- ❌ 在 tasks.md 中添加或删除任务（除非用户明确要求）
+- ❌ 修改任务的子任务列表
+
+#### 7. AI 助手检查清单 / AI Assistant Checklist
+
+在开始任务之前：
+- [ ] 我已经读取了 tasks.md，确认要执行哪个任务
+- [ ] 我已经读取了 requirements.md，理解了相关需求
+- [ ] 我已经读取了 design.md，了解了设计方案
+- [ ] 我明确知道这个任务的所有子任务
+- [ ] 我不会添加额外的功能或优化
+
+在完成任务之后：
+- [ ] 我已经实现了所有子任务
+- [ ] 我已经测试了功能是否满足验收标准
+- [ ] 我已经更新了 tasks.md，标记任务为完成
+- [ ] 我已经提交并推送了代码
+- [ ] 我只修改了 tasks.md 的状态，没有修改需求或设计文档
 
 ---
 
@@ -181,57 +476,161 @@ def retrieve_documents(
 
 ---
 
-## Key Components
+## 关键组件说明 (Key Components)
 
-### 1. Embedding Generation
+### 1. 配置管理 (Configuration Management)
 
-**Purpose**: Convert text to vector embeddings
+**位置**: `rag5/config/`
 
-**Key Considerations**:
-- Model selection (dimension, performance trade-off)
-- Batch processing for efficiency
-- Caching strategies
-- Normalization
+**功能**:
+- 环境变量加载和验证
+- 配置文件管理
+- 默认值处理
+- 类型验证
 
-### 2. Vector Store
+**关键文件**:
+- `settings.py` - 主配置类，使用 Pydantic
+- `loader.py` - 配置加载器
+- `validator.py` - 配置验证器
 
-**Purpose**: Store and retrieve embeddings efficiently
+**使用示例**:
+```python
+from rag5 import settings
 
-**Key Considerations**:
-- Index type (flat, IVF, HNSW)
-- Distance metric (cosine, euclidean, dot product)
-- Scalability
-- Persistence
+# 访问配置
+print(f"LLM 模型: {settings.llm_model}")
+print(f"嵌入模型: {settings.embedding_model}")
+print(f"Qdrant URL: {settings.qdrant_url}")
+```
 
-### 3. Retrieval Logic
+### 2. 核心代理系统 (Core Agent System)
 
-**Purpose**: Find most relevant documents for queries
+**位置**: `rag5/core/agent/`
 
-**Key Considerations**:
-- Similarity scoring
-- Re-ranking strategies
-- Filtering and metadata
-- Hybrid search (dense + sparse)
+**功能**:
+- RAG 代理实现 (基于 LangChain)
+- 查询处理和优化
+- 工具调用协调
+- 对话历史管理
 
-### 4. Generation
+**关键文件**:
+- `SimpleRAGAgent` - 主代理类
+- `AgentInitializer` - 代理初始化
+- `MessageProcessor` - 消息处理
+- `ConversationHistory` - 对话历史
 
-**Purpose**: Generate responses using retrieved context
+**使用示例**:
+```python
+from rag5 import ask
 
-**Key Considerations**:
-- Prompt engineering
-- Context window management
-- Token limits
-- Response quality
+# 简单提问
+answer = ask("什么是 RAG?")
+print(answer)
+```
 
-### 5. Preprocessing
+### 3. 知识库管理 (Knowledge Base Management)
 
-**Purpose**: Prepare documents for embedding
+**位置**: `rag5/core/knowledge_base/`
 
-**Key Considerations**:
-- Chunking strategies
-- Overlap handling
-- Metadata extraction
-- Format normalization
+**功能**:
+- 知识库创建和删除
+- 文档管理
+- 元数据管理
+- 多知识库支持
+
+**关键操作**:
+- 创建知识库
+- 切换知识库
+- 查询知识库信息
+- 删除知识库
+
+### 4. 数据摄取管道 (Ingestion Pipeline)
+
+**位置**: `rag5/ingestion/`
+
+**功能**:
+- 文档加载 (PDF, TXT, Markdown 等)
+- 智能分块 (中文优化)
+- 向量化
+- 批量处理
+
+**子模块**:
+- `loaders/` - 各种文档加载器
+- `splitters/` - 文本分块器 (递归分块、字符分块)
+- `vectorizers/` - 向量化器 (Ollama embeddings)
+- `pipeline.py` - 完整的摄取流水线
+
+**使用示例**:
+```python
+from rag5 import ingest_directory
+
+# 摄取整个目录
+result = ingest_directory("./docs")
+print(f"处理了 {result.documents_loaded} 个文档")
+```
+
+### 5. 工具系统 (Tools System)
+
+**位置**: `rag5/tools/`
+
+**功能**:
+- 向量搜索工具
+- 嵌入生成工具
+- 数据库管理工具
+- 工具注册和发现
+
+**子模块**:
+- `search/` - 向量搜索实现
+- `embeddings/` - 嵌入生成
+- `database/` - Qdrant 数据库操作
+- `registry.py` - 工具注册表
+
+### 6. 接口层 (Interfaces)
+
+**位置**: `rag5/interfaces/`
+
+**API 接口** (`api/`):
+- REST API 端点
+- FastAPI 实现
+- 异步处理
+- 错误处理
+
+**Web UI** (`ui/`):
+- Streamlit 界面
+- 交互式对话
+- 知识库管理
+- 实时日志查看
+
+**启动方式**:
+```bash
+# API 接口
+python scripts/run_api.py
+# 或
+rag5-api
+
+# Web UI
+python scripts/run_ui.py
+# 或
+rag5-ui
+```
+
+### 7. 工具函数 (Utilities)
+
+**位置**: `rag5/utils/`
+
+**功能**:
+- 日志系统 (`logger.py`)
+- 性能监控 (`monitoring.py`)
+- 安全工具 (`security.py`)
+- 通用辅助函数
+
+**日志使用**:
+```python
+from rag5.utils import get_logger
+
+logger = get_logger(__name__)
+logger.info("开始处理文档")
+```
 
 ---
 
@@ -292,57 +691,188 @@ pytest -v
 
 ---
 
-## Dependencies & Tools
+## 依赖和工具 (Dependencies & Tools)
 
-### Core Dependencies (Expected)
+### 核心依赖 (Core Dependencies)
 
-```txt
-# requirements.txt
-numpy>=1.21.0
-pandas>=1.3.0
-sentence-transformers>=2.2.0
-faiss-cpu>=1.7.0  # or faiss-gpu
-langchain>=0.1.0
-openai>=1.0.0
-anthropic>=0.18.0
-pydantic>=2.0.0
-python-dotenv>=1.0.0
-pyyaml>=6.0
-```
-
-### Development Dependencies
+**实际的 requirements.txt:**
 
 ```txt
-# requirements-dev.txt
-pytest>=7.0.0
-pytest-cov>=4.0.0
-black>=23.0.0
-flake8>=6.0.0
-mypy>=1.0.0
-ipython>=8.0.0
-jupyter>=1.0.0
+# LangChain 框架和相关组件
+langchain>=0.1.0,<0.3.0
+langchain-community>=0.0.10,<0.3.0
+langchain-ollama>=0.1.0,<0.2.0
+langgraph>=0.0.20,<0.3.0
+
+# 向量数据库
+qdrant-client>=1.7.0,<2.0.0
+
+# Web 框架
+fastapi>=0.109.0,<0.111.0
+uvicorn[standard]>=0.27.0,<0.30.0
+streamlit>=1.30.0,<2.0.0
+
+# 配置管理
+python-dotenv>=1.0.0,<2.0.0
+
+# 文档处理
+pypdf>=3.17.0,<5.0.0
+unstructured>=0.11.0,<0.15.0
+
+# HTTP 客户端
+httpx>=0.25.0,<0.28.0
+requests>=2.31.0,<3.0.0
+
+# 测试依赖（可选，用于开发）
+pytest>=7.4.0,<8.0.0
+pytest-cov>=4.1.0,<5.0.0
+pytest-asyncio>=0.21.0,<0.24.0
 ```
 
-### Useful Commands
+### 外部服务依赖
+
+**必需的外部服务:**
+
+1. **Ollama** - 本地 LLM 服务
+   ```bash
+   # 安装 Ollama (参考官方文档)
+   # 启动服务
+   ollama serve
+
+   # 拉取模型
+   ollama pull qwen2.5:7b
+   ollama pull bge-m3
+   ```
+
+2. **Qdrant** - 向量数据库
+   ```bash
+   # 使用 Docker 运行
+   docker run -p 6333:6333 \
+     -v $(pwd)/qdrant_storage:/qdrant/storage \
+     qdrant/qdrant
+   ```
+
+### 常用命令 (Useful Commands)
 
 ```bash
-# Setup virtual environment
+# ====== 环境设置 ======
+# 创建虚拟环境
 python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
+source venv/bin/activate  # Linux/Mac
+# 或
+venv\Scripts\activate     # Windows
 
-# Install dependencies
+# 安装依赖
 pip install -r requirements.txt
-pip install -r requirements-dev.txt
 
-# Format code
-black src/ tests/
+# 安装为可编辑包（推荐开发使用）
+pip install -e .
 
-# Lint code
-flake8 src/ tests/
+# ====== 模型设置 ======
+# 使用自动化脚本
+./setup_models.sh
 
-# Type check
-mypy src/
+# 或手动拉取
+ollama pull qwen2.5:7b
+ollama pull bge-m3
+
+# ====== 数据摄取 ======
+# 摄取文档目录
+rag5-ingest /path/to/documents
+# 或
+python scripts/ingest.py /path/to/documents
+
+# ====== 运行服务 ======
+# 启动 Web UI
+rag5-ui
+# 或
+python scripts/run_ui.py
+
+# 启动 API 服务
+rag5-api
+# 或
+python scripts/run_api.py
+
+# ====== 测试 ======
+# 运行所有测试
+pytest
+
+# 运行带覆盖率的测试
+pytest --cov=rag5 --cov-report=html
+
+# 运行特定测试文件
+pytest tests/test_core/test_agent.py
+
+# 运行端到端测试
+python scripts/test_e2e.py
+
+# ====== 调试工具 ======
+# 检索调试
+python scripts/debug_retrieval.py "测试查询"
+
+# 日志分析
+python scripts/analyze_flow_logs.py
+
+# 性能测试
+python scripts/test_performance.py
+
+# 验证安全性
+python scripts/validate_security.py
+
+# ====== 知识库管理 ======
+# 知识库管理器
+python scripts/kb_manager.py
+
+# 知识库迁移
+python scripts/migrate_kb.py
+
+# ====== 代码质量 ======
+# 格式化代码（如果使用 black）
+# black rag5/ tests/
+
+# 类型检查（如果使用 mypy）
+# mypy rag5/
 ```
+
+### 开发工具脚本
+
+项目包含多个实用脚本：
+
+| 脚本 | 功能 | 位置 |
+|------|------|------|
+| `ingest.py` | 文档摄取 | `scripts/` |
+| `run_api.py` | 启动 API 服务器 | `scripts/` |
+| `run_ui.py` | 启动 Web UI | `scripts/` |
+| `kb_manager.py` | 知识库管理 | `scripts/` |
+| `debug_retrieval.py` | 检索调试 | `scripts/` |
+| `test_e2e.py` | 端到端测试 | `scripts/` |
+| `test_performance.py` | 性能测试 | `scripts/` |
+| `validate_security.py` | 安全验证 | `scripts/` |
+| `validate_performance.py` | 性能验证 | `scripts/` |
+| `analyze_flow_logs.py` | 日志分析 | `scripts/` |
+| `compress_logs.py` | 日志压缩 | `scripts/` |
+| `migrate_kb.py` | 知识库迁移 | `scripts/` |
+
+### 环境变量配置
+
+参考 `.env.example` 文件配置环境变量：
+
+```bash
+# 复制示例文件
+cp .env.example .env
+
+# 编辑配置
+vim .env
+```
+
+**主要配置项：**
+- `OLLAMA_BASE_URL` - Ollama 服务地址
+- `LLM_MODEL` - LLM 模型名称
+- `EMBEDDING_MODEL` - 嵌入模型名称
+- `QDRANT_URL` - Qdrant 服务地址
+- `COLLECTION_NAME` - 向量集合名称
+- `CHUNK_SIZE` - 文本分块大小
+- `CHUNK_OVERLAP` - 分块重叠大小
 
 ---
 
@@ -533,7 +1063,7 @@ EOF
 
 ```bash
 # Push to feature branch with retry logic
-git push -u origin claude/claude-md-mhy2yxh8uoqw1sn3-01FxEHLkfYoJX6JXWkLDhCM8
+git push -u origin claude/claude-md-mhy48gl18qidu2w9-01RjkXCxeamU1fV2631u67h7
 
 # If network failure, retry with exponential backoff
 # (automated by system)
@@ -570,6 +1100,64 @@ git push -u origin claude/claude-md-mhy2yxh8uoqw1sn3-01FxEHLkfYoJX6JXWkLDhCM8
 
 ## Changelog
 
+### 2025-11-14 - 添加 KB Frontend UI 文档工作流程规范
+
+**重要更新 - 添加严格的任务执行规则**
+
+- ✅ **新增章节**: "KB Frontend UI Documentation Workflow"
+- ✅ **文档结构说明**: 详细说明了 kb-frontend-ui/ 目录下三个文档的关系
+  - requirements.md - 需求文档（15 个需求）
+  - design.md - 设计文档（架构和实现细节）
+  - tasks.md - 任务清单（可执行任务）
+- ✅ **严格工作流程规则**:
+  - 必须严格按照 tasks.md 执行任务
+  - 不要添加额外功能
+  - 不要修改需求和设计文档（除非用户明确要求）
+  - 只能更新 tasks.md 的任务状态
+- ✅ **任务执行流程**: 详细的 8 步执行流程
+- ✅ **AI 助手检查清单**: 任务前后的验证清单
+- ✅ **示例说明**: 正确和错误的做法对比
+- 📈 **版本**: 2.0.0 → 2.1.0
+
+### 2025-11-14 - 重大更新：反映实际项目状态 / Major Update: Actual Project State
+
+**重要更新 - 从 main 分支同步代码**
+
+- ✅ **项目状态更新**: 从"初始阶段"更新为"功能完整的 RAG 系统 v2.0.0"
+- ✅ **实际架构文档**: 更新项目结构以反映真实的 `rag5/` 代码库
+- ✅ **技术栈更新**:
+  - LLM: Ollama (qwen2.5:7b)
+  - Embeddings: Ollama (bge-m3)
+  - Vector DB: Qdrant (替代 FAISS)
+  - Framework: LangChain + LangGraph
+- ✅ **关键组件说明**: 详细记录了 7 个主要模块
+  - 配置管理 (config)
+  - 核心代理系统 (core/agent)
+  - 知识库管理 (core/knowledge_base)
+  - 数据摄取管道 (ingestion)
+  - 工具系统 (tools)
+  - 接口层 (interfaces)
+  - 工具函数 (utils)
+- ✅ **依赖更新**: 使用实际的 requirements.txt 内容
+- ✅ **开发工具**: 记录了 12+ 个实用脚本
+- ✅ **环境配置**: 添加了外部服务依赖说明 (Ollama, Qdrant)
+- 📈 **版本**: 1.2.0 → 2.0.0 (反映项目实际版本)
+
+### 2025-11-14 - 添加语言规范要求 / Language Requirements Added
+
+- 新增"Language Requirements"章节，明确中文使用规范
+- 要求所有对话、注释、文档使用中文
+- 提供中文注释和文档字符串的示例代码
+- 添加配置文件的中文注释示例
+- 更新版本到 1.2.0
+
+### 2025-11-14 - Repository State Update
+
+- Updated branch name to current feature branch
+- Clarified current repository state (only git + CLAUDE.md exist)
+- Added explicit list of what exists vs. what needs to be created
+- Updated last modified date and version
+
 ### 2025-11-13 - Initial Creation
 
 - Created CLAUDE.md with comprehensive guidelines
@@ -589,6 +1177,6 @@ For questions or issues:
 
 ---
 
-**Last Updated**: 2025-11-13
-**Version**: 1.0.0
+**Last Updated**: 2025-11-14
+**Version**: 2.1.0
 **Maintained By**: AI Assistants working on rag5-simplified-001
