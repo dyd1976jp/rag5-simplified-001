@@ -1,72 +1,32 @@
 """
-Knowledge Base Detail Page
+知识库详情页面
 
-This module provides the knowledge base detail page UI with tabs for
-file management, settings, and retrieval testing.
+这个模块提供知识库详情页面的 UI，包含三个标签页：
+- 文件管理：上传、查看和管理文件
+- 知识库设置：配置知识库参数
+- 检索测试：测试搜索功能
 """
 
 import logging
 import time
-from datetime import datetime
 from typing import Dict, Any, Optional
 import streamlit as st
 
 from .api_client import KnowledgeBaseAPIClient, APIError
+from .components import (
+    format_datetime,
+    format_file_size,
+    show_success,
+    show_error,
+    show_warning,
+    show_info,
+    validate_file_upload,
+    validate_chunk_config,
+    validate_retrieval_config,
+)
 from ...state import SessionState
 
 logger = logging.getLogger(__name__)
-
-
-# ==================== Utility Functions ====================
-
-def format_datetime(dt_str: str) -> str:
-    """
-    Format datetime string to readable format.
-    
-    Args:
-        dt_str: ISO format datetime string
-        
-    Returns:
-        Formatted datetime string (YYYY-MM-DD HH:MM)
-        
-    Example:
-        >>> format_datetime("2024-01-15T10:30:00Z")
-        '2024-01-15 10:30'
-    """
-    try:
-        dt = datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
-        return dt.strftime("%Y-%m-%d %H:%M")
-    except Exception as e:
-        logger.warning(f"Failed to format datetime {dt_str}: {e}")
-        return dt_str
-
-
-def format_file_size(size_bytes: int) -> str:
-    """
-    Format file size in bytes to human-readable format.
-    
-    Args:
-        size_bytes: File size in bytes
-        
-    Returns:
-        Formatted file size string
-        
-    Example:
-        >>> format_file_size(1024)
-        '1.0 KB'
-        >>> format_file_size(1048576)
-        '1.0 MB'
-    """
-    try:
-        size = float(size_bytes)
-        for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
-            if size < 1024.0:
-                return f"{size:.1f} {unit}"
-            size /= 1024.0
-        return f"{size:.1f} PB"
-    except Exception as e:
-        logger.warning(f"Failed to format file size {size_bytes}: {e}")
-        return f"{size_bytes} B"
 
 
 def render_kb_detail_page(api_client: KnowledgeBaseAPIClient):
