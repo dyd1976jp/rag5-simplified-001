@@ -104,13 +104,17 @@
   - 显示当前使用的知识库名称
   - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
-- [ ] 12. 实现工具函数和组件
+- [x] 12. 实现工具函数和组件
   - 创建 pages/knowledge_base/components.py
   - 实现 format_datetime 函数
   - 实现 format_file_size 函数
   - 实现 safe_api_call 错误处理包装器
   - 实现用户反馈函数（show_success, show_error, show_warning, show_info）
   - 实现输入验证函数（validate_kb_name, validate_file_upload）
+  - 额外实现：format_percentage, truncate_text, validate_chunk_config, validate_retrieval_config, render_status_badge, create_progress_bar, show_spinner
+  - 创建了完整的测试套件（20 个单元测试通过）
+  - 创建了交互式演示应用（test_components_demo.py）
+  - 创建了详细的使用文档（COMPONENTS_USAGE.md）
   - _Requirements: 14.1, 14.2, 14.3, 14.4, 15.1, 15.2, 15.3, 15.4_
 
 - [ ] 13. 添加配置管理
