@@ -104,30 +104,40 @@
   - 显示当前使用的知识库名称
   - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
-- [ ] 12. 实现工具函数和组件
+- [x] 12. 实现工具函数和组件
   - 创建 pages/knowledge_base/components.py
   - 实现 format_datetime 函数
   - 实现 format_file_size 函数
   - 实现 safe_api_call 错误处理包装器
   - 实现用户反馈函数（show_success, show_error, show_warning, show_info）
   - 实现输入验证函数（validate_kb_name, validate_file_upload）
+  - 额外实现：format_percentage, truncate_text, validate_chunk_config, validate_retrieval_config, render_status_badge, create_progress_bar, show_spinner
+  - 创建了完整的测试套件（20 个单元测试通过）
+  - 创建了交互式演示应用（test_components_demo.py）
+  - 创建了详细的使用文档（COMPONENTS_USAGE.md）
   - _Requirements: 14.1, 14.2, 14.3, 14.4, 15.1, 15.2, 15.3, 15.4_
 
-- [ ] 13. 添加配置管理
+- [x] 13. 添加配置管理
   - 创建 rag5/interfaces/ui/config.py
   - 定义 UIConfig 类
   - 添加 API 配置（base_url, timeout）
   - 添加 UI 配置（page_size, file_page_size）
   - 添加缓存配置（cache_ttl）
   - 支持环境变量配置
+  - 额外实现：类方法访问、全局配置实例、配置显示方法
+  - 创建了完整的测试套件（10 个单元测试通过）
+  - 创建了详细的使用文档（CONFIG_USAGE.md）
   - _Requirements: All_
 
-- [ ] 14. 实现性能优化
+- [x] 14. 实现性能优化
   - 添加 @st.cache_data 装饰器缓存 API 响应
   - 实现 get_knowledge_bases_cached 函数
   - 实现 get_kb_files_cached 函数
   - 优化 st.rerun() 调用
   - 实现懒加载策略
+  - 额外实现：StateOptimizer（状态优化器）、LazyLoader（懒加载器）、PerformanceMonitor（性能监控器）
+  - 创建了完整的测试套件（15 个单元测试通过）
+  - 创建了详细的使用文档（PERFORMANCE_USAGE.md）
   - _Requirements: All_
 
 - [ ] 15. 更新文档和示例
