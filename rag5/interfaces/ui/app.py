@@ -70,28 +70,42 @@ def main():
     # 初始化会话状态
     SessionState.initialize()
 
+    # 获取当前页面状态
+    current_page = SessionState.get_current_page()
+
+    # 确定侧边栏导航的默认索引
+    # kb_detail 属于知识库管理的子页面，所以也应显示"知识库管理"
+    if current_page in ["chat"]:
+        default_index = 0  # 聊天
+    else:
+        default_index = 1  # 知识库管理（包括 kb_management, kb_list, kb_detail）
+
     # 侧边栏导航
     with st.sidebar:
         st.title("🧭 导航")
         page = st.radio(
             "选择页面",
             ["💬 聊天", "📚 知识库管理"],
+            index=default_index,
             key="navigation",
             label_visibility="collapsed"
         )
 
-        # 更新当前页面状态
-        if page == "💬 聊天":
+        # 只有当用户主动切换页面时才更新状态
+        # 如果当前在 kb_detail 页面，侧边栏选中"知识库管理"，不要覆盖状态
+        if page == "💬 聊天" and current_page != "chat":
             SessionState.set_current_page("chat")
-        else:
-            SessionState.set_current_page("kb_management")
+        elif page == "📚 知识库管理" and current_page == "chat":
+            # 从聊天切换到知识库管理，默认显示列表页
+            SessionState.set_current_page("kb_list")
 
-    # 根据选择的页面渲染相应内容
+    # 重新获取当前页面状态（可能已被侧边栏更新）
     current_page = SessionState.get_current_page()
 
-    if current_page == "chat" or page == "💬 聊天":
+    if current_page == "chat":
         render_chat_page()
     else:
+        # 知识库管理相关页面（kb_list, kb_detail, kb_management）
         render_kb_management()
 
 
