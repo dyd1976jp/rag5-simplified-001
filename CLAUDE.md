@@ -8,15 +8,102 @@
 
 ## Table of Contents
 
-1. [Repository Status](#repository-status)
-2. [Expected Architecture](#expected-architecture)
-3. [Development Workflow](#development-workflow)
-4. [Code Conventions](#code-conventions)
-5. [Key Components](#key-components)
-6. [Testing Strategy](#testing-strategy)
-7. [Dependencies & Tools](#dependencies--tools)
-8. [Common Tasks](#common-tasks)
-9. [Troubleshooting](#troubleshooting)
+1. [Language Requirements](#language-requirements)
+2. [Repository Status](#repository-status)
+3. [Expected Architecture](#expected-architecture)
+4. [Development Workflow](#development-workflow)
+5. [Code Conventions](#code-conventions)
+6. [Key Components](#key-components)
+7. [Testing Strategy](#testing-strategy)
+8. [Dependencies & Tools](#dependencies--tools)
+9. [Common Tasks](#common-tasks)
+10. [Troubleshooting](#troubleshooting)
+
+---
+
+## Language Requirements
+
+**项目语言规范 / Project Language Standards**
+
+### 对话语言 / Communication Language
+
+- **AI 助手与用户的对话必须使用中文**
+- All conversations between AI assistants and users must be conducted in Chinese
+- 问题讨论、建议、解释等都应使用中文
+
+### 代码注释与文档 / Code Comments and Documentation
+
+- **所有代码注释必须使用中文**
+- **所有文档字符串 (docstrings) 必须使用中文**
+- **README、文档文件等说明性内容必须使用中文**
+- 变量名、函数名、类名等标识符应使用英文（符合 Python 规范）
+- Git 提交信息可以使用中文或英文
+
+### 示例 / Examples
+
+```python
+from typing import List, Dict, Optional
+import numpy as np
+
+
+def retrieve_documents(
+    query: str,
+    top_k: int = 5,
+    similarity_threshold: float = 0.7
+) -> List[Dict[str, any]]:
+    """检索与查询相关的文档。
+
+    根据给定的查询字符串，从向量数据库中检索最相关的文档。
+    使用余弦相似度进行排序，并返回得分最高的文档。
+
+    参数:
+        query: 查询字符串
+        top_k: 返回的文档数量
+        similarity_threshold: 最小相似度阈值
+
+    返回:
+        包含文档内容和元数据的字典列表
+
+    异常:
+        ValueError: 当查询为空或 top_k 无效时
+
+    示例:
+        >>> docs = retrieve_documents("什么是 RAG？", top_k=3)
+        >>> len(docs) <= 3
+        True
+    """
+    if not query:
+        raise ValueError("查询不能为空")
+
+    # 实现检索逻辑
+    # TODO: 添加向量嵌入生成
+    # TODO: 执行相似度搜索
+    pass
+```
+
+### 配置文件 / Configuration Files
+
+配置文件（YAML、JSON等）中的键名使用英文，注释和描述使用中文：
+
+```yaml
+# 模型配置
+model_config:
+  embedding_model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  dimension: 384  # 嵌入向量维度
+  normalize: true  # 是否归一化向量
+
+# 检索配置
+retrieval_config:
+  top_k: 5  # 返回文档数量
+  similarity_metric: "cosine"  # 相似度计算方式：cosine, euclidean, dot_product
+```
+
+### 重要提醒 / Important Notes
+
+- ✅ **必须做**: 所有注释、文档、对话使用中文
+- ✅ **推荐做**: Git 提交信息使用中文，便于团队理解
+- ❌ **不要做**: 代码标识符（变量名、函数名、类名）使用中文
+- ❌ **不要做**: 与用户对话时使用英文
 
 ---
 
@@ -580,6 +667,14 @@ git push -u origin claude/claude-md-mhy48gl18qidu2w9-01RjkXCxeamU1fV2631u67h7
 
 ## Changelog
 
+### 2025-11-14 - 添加语言规范要求 / Language Requirements Added
+
+- 新增"Language Requirements"章节，明确中文使用规范
+- 要求所有对话、注释、文档使用中文
+- 提供中文注释和文档字符串的示例代码
+- 添加配置文件的中文注释示例
+- 更新版本到 1.2.0
+
 ### 2025-11-14 - Repository State Update
 
 - Updated branch name to current feature branch
@@ -607,5 +702,5 @@ For questions or issues:
 ---
 
 **Last Updated**: 2025-11-14
-**Version**: 1.1.0
+**Version**: 1.2.0
 **Maintained By**: AI Assistants working on rag5-simplified-001
