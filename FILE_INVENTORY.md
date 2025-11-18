@@ -1,0 +1,214 @@
+# File Inventory
+
+Below is the tracked file list (via `git ls-files`) along with a short note on each file’s role.
+- `.env.example` – Template for `.env` settings.
+- `.gitignore` – General project file.
+- `CLAUDE.md` – Documentation or guidance for contributors/users.
+- `README.md` – Primary landing document describing embedding troubleshooting and setup.
+- `data/knowledge_bases.db` – Example data/knowledge snapshots used in testing demos.
+- `docs/.gitkeep` – Project documentation and knowledge-base dumps.
+- `examples/README.md` – Documentation or guidance for contributors/users.
+- `examples/analyze_flow_basic.py` – Python module contributing to the main application.
+- `examples/analyze_flow_errors.py` – Python module contributing to the main application.
+- `examples/analyze_flow_logs_example.py` – Python module contributing to the main application.
+- `examples/analyze_flow_performance.py` – Python module contributing to the main application.
+- `examples/analyze_llm_logs.py` – Python module contributing to the main application.
+- `examples/analyze_reflections.py` – Python module contributing to the main application.
+- `examples/kb_management/README.md` – Documentation or guidance for contributors/users.
+- `examples/kb_management/advanced_config.py` – Python module contributing to the main application.
+- `examples/kb_management/basic_usage.py` – Python module contributing to the main application.
+- `examples/kb_management/batch_operations.py` – Python module contributing to the main application.
+- `examples/kb_management/monitoring.py` – Python module contributing to the main application.
+- `examples/kb_management/multi_domain.py` – Python module contributing to the main application.
+- `examples/kb_management/multi_language.py` – Python module contributing to the main application.
+- `kb-frontend-ui/design.md` – Documentation or guidance for contributors/users.
+- `kb-frontend-ui/requirements.md` – Documentation or guidance for contributors/users.
+- `kb-frontend-ui/tasks.md` – Documentation or guidance for contributors/users.
+- `rag5/__init__.py` – Python module contributing to the main application.
+- `rag5/config/README.md` – Configuration schema and defaults.
+- `rag5/config/__init__.py` – Configuration schema and defaults.
+- `rag5/config/defaults.py` – Configuration schema and defaults.
+- `rag5/config/loader.py` – Configuration schema and defaults.
+- `rag5/config/settings.py` – Configuration schema and defaults.
+- `rag5/config/validator.py` – Configuration schema and defaults.
+- `rag5/core/README.md` – Core retrieval and prompt orchestration logic.
+- `rag5/core/__init__.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/agent/__init__.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/agent/agent.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/agent/errors.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/agent/history.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/agent/initializer.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/agent/messages.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/knowledge_base/__init__.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/knowledge_base/database.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/knowledge_base/manager.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/knowledge_base/models.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/knowledge_base/provider.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/knowledge_base/vector_manager.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/prompts/__init__.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/prompts/system.py` – Core retrieval and prompt orchestration logic.
+- `rag5/core/prompts/tools.py` – Core retrieval and prompt orchestration logic.
+- `rag5/ingestion/README.md` – Document ingestion routines.
+- `rag5/ingestion/__init__.py` – Document ingestion routines.
+- `rag5/ingestion/loaders/__init__.py` – Document ingestion routines.
+- `rag5/ingestion/loaders/base.py` – Document ingestion routines.
+- `rag5/ingestion/loaders/markdown_loader.py` – Document ingestion routines.
+- `rag5/ingestion/loaders/pdf_loader.py` – Document ingestion routines.
+- `rag5/ingestion/loaders/text_loader.py` – Document ingestion routines.
+- `rag5/ingestion/pipeline.py` – Document ingestion routines.
+- `rag5/ingestion/splitters/__init__.py` – Document ingestion routines.
+- `rag5/ingestion/splitters/chinese_splitter.py` – Document ingestion routines.
+- `rag5/ingestion/splitters/recursive_splitter.py` – Document ingestion routines.
+- `rag5/ingestion/vectorizers/__init__.py` – Document ingestion routines.
+- `rag5/ingestion/vectorizers/batch_vectorizer.py` – Document ingestion routines.
+- `rag5/ingestion/vectorizers/uploader.py` – Document ingestion routines.
+- `rag5/interfaces/README.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/__init__.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/api/__init__.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/api/app.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/api/handlers.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/api/kb_routes.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/api/models.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/api/routes.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/CONFIG_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/PERFORMANCE_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/__init__.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/app.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/components.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/config.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/CHAT_KB_INTEGRATION_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/__init__.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/chat.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/API_CLIENT_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/COMPONENTS_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/DELETE_KB_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/DETAIL_PAGE_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/FILE_MANAGEMENT_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/FILE_OPERATIONS_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/KB_SETTINGS_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/LIST_PAGE_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/RETRIEVAL_TEST_USAGE.md` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/__init__.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/api_client.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/components.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/detail.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/pages/knowledge_base/list.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/performance.py` – Interface adapters (CLI, API, UI).
+- `rag5/interfaces/ui/state.py` – Interface adapters (CLI, API, UI).
+- `rag5/tools/README.md` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/__init__.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/base.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/diagnostics/README.md` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/diagnostics/__init__.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/diagnostics/db_check.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/diagnostics/db_inspector.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/embeddings/__init__.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/embeddings/ollama_embeddings.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/index_manager/README.md` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/index_manager/__init__.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/index_manager/cli.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/index_manager/manager.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/registry.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/search/__init__.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/search/adaptive_search.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/search/hybrid_search.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/search/query_expander.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/search/search_tool.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/vectordb/__init__.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/vectordb/connection.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/vectordb/qdrant_client.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/tools/vectordb/retry.py` – Utility helpers for embeddings, evaluation, and tooling.
+- `rag5/utils/__init__.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/async_writer.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/chinese_diagnostic.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/context_logger.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/flow_analyzer.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/flow_formatter.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/flow_logger.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/id_generator.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/llm_logger.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/log_rotation.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/logging_config.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/redactor.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/reflection_logger.py` – Shared helper utilities (models, clients, etc.).
+- `rag5/utils/structured_formatter.py` – Shared helper utilities (models, clients, etc.).
+- `requirements.txt` – Pinned Python dependencies for the project.
+- `scripts/CLI_USAGE.md` – Utility scripts for setup or helpers.
+- `scripts/DEBUG_RETRIEVAL_README.md` – Utility scripts for setup or helpers.
+- `scripts/KB_CLI_README.md` – Utility scripts for setup or helpers.
+- `scripts/README.md` – Utility scripts for setup or helpers.
+- `scripts/__init__.py` – Script entry file for helper workflows.
+- `scripts/analyze_flow_logs.py` – Script entry file for helper workflows.
+- `scripts/compress_logs.py` – Script entry file for helper workflows.
+- `scripts/debug_retrieval.py` – Script entry file for helper workflows.
+- `scripts/ingest.py` – Script entry file for helper workflows.
+- `scripts/kb_manager.py` – Script entry file for helper workflows.
+- `scripts/migrate_kb.py` – Script entry file for helper workflows.
+- `scripts/run_api.py` – Script entry file for helper workflows.
+- `scripts/run_ui.py` – Script entry file for helper workflows.
+- `scripts/setup_models.sh` – Utility scripts for setup or helpers.
+- `scripts/test_e2e.py` – Script entry file for helper workflows.
+- `scripts/test_performance.py` – Script entry file for helper workflows.
+- `scripts/validate_performance.py` – Script entry file for helper workflows.
+- `scripts/validate_security.py` – Script entry file for helper workflows.
+- `setup.py` – Package metadata and entry point definitions.
+- `setup_models.sh` – Script to pull or prepare necessary models.
+- `test_components_demo.py` – Python module contributing to the main application.
+- `tests/__init__.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/conftest.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_backward_compatibility.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_config/__init__.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_config/test_loader.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_config/test_settings.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_config/test_validator.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_core/__init__.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_core/test_agent.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_core/test_errors.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_core/test_history.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_core/test_kb_manager.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_core/test_kb_models.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_core/test_kb_provider.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_core/test_messages.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_core/test_vector_manager.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_database_operations.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_documentation.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_e2e.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_flow_analyzer_manual.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_flow_logging_manual.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_ingestion/__init__.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_ingestion/test_loaders.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_ingestion/test_pipeline.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_ingestion/test_splitters.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_ingestion/test_vectorizers.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_integration/__init__.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_integration/test_e2e_logging.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_integration/test_flow_logging_e2e.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_integration/test_kb_agent_integration.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_interfaces/__init__.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_interfaces/test_api.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_interfaces/test_kb_api.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_interfaces/test_kb_components.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_interfaces/test_ui_config.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_interfaces/test_ui_performance.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_kb_initialization.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_performance/__init__.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_performance/test_flow_logging_overhead.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_tools/__init__.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_tools/test_embeddings.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_tools/test_registry.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_tools/test_search.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_tools/test_vectordb.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/__init__.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_async_writer.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_context_logger.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_flow_analyzer.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_flow_formatter.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_flow_logger.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_flow_logger_integration.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_llm_logger.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_llm_wrapper.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_redactor.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_reflection_logger.py` – Test module ensuring the described functionality behaves as expected.
+- `tests/test_utils/test_structured_formatter.py` – Test module ensuring the described functionality behaves as expected.
+- `text/1i0ae3sumrl64W5nn7PshnNla14b1c.txt` – Plain-text resource.
+- `verify_task_5.py` – Python module contributing to the main application.

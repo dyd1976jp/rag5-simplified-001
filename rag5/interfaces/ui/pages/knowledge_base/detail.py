@@ -16,6 +16,7 @@ from .api_client import KnowledgeBaseAPIClient, APIError
 from .components import (
     format_datetime,
     format_file_size,
+    truncate_text,
     show_success,
     show_error,
     show_warning,
@@ -183,6 +184,13 @@ def render_file_management_tab(kb_id: str, api_client: KnowledgeBaseAPIClient):
         key=f"file_uploader_{kb_id}",
         help="支持的文件格式：TXT, MD, PDF, DOCX"
     )
+
+    original_page_url = st.text_input(
+        "原始页面 URL（可选）",
+        placeholder="https://example.com/document",
+        help="如果文件来自网页，请填写原始页面链接，方便追溯",
+        key=f"original_page_url_{kb_id}"
+    )
     
     if uploaded_files:
         col1, col2 = st.columns([3, 1])
@@ -223,7 +231,11 @@ def render_file_management_tab(kb_id: str, api_client: KnowledgeBaseAPIClient):
                         
                         try:
                             # Upload single file
-                            result = api_client.upload_files(kb_id, [file])
+                            result = api_client.upload_files(
+                                kb_id,
+                                [file],
+                                original_page_url=original_page_url or None
+                            )
                             results.extend(result)
                             logger.info(f"Uploaded file {file.name} to KB {kb_id}")
                         except Exception as e:
@@ -402,6 +414,7 @@ def render_file_row(file: Dict[str, Any], kb_id: str, api_client: KnowledgeBaseA
         >>> render_file_row(file, "kb_123", api_client)
     """
     with st.container(border=True):
+        metadata = file.get('metadata', {}) or {}
         # Main file information row
         col1, col2, col3, col4 = st.columns([3, 1.5, 1.5, 1.5])
         
@@ -410,6 +423,13 @@ def render_file_row(file: Dict[str, Any], kb_id: str, api_client: KnowledgeBaseA
             st.markdown(f"**📄 {file['file_name']}**")
             file_size = file.get('file_size', 0)
             st.caption(f"大小: {format_file_size(file_size)}")
+            original_page_url = metadata.get("original_page_url") or metadata.get("file_source")
+            if original_page_url:
+                display_url = truncate_text(original_page_url, max_length=60)
+                st.markdown(
+                    f"🔗 原始页面: [{display_url}]({original_page_url})",
+                    unsafe_allow_html=True
+                )
         
         # Column 2: Status with color indicator
         with col2:
@@ -492,6 +512,10 @@ def render_file_row(file: Dict[str, Any], kb_id: str, api_client: KnowledgeBaseA
             else:
                 with st.expander("🔍 查看错误详情", expanded=False):
                     st.warning("未提供错误详情")
+
+        if metadata:
+            with st.expander("📋 文件元数据", expanded=False):
+                st.json(metadata)
 
 
 @st.dialog("确认删除文件")

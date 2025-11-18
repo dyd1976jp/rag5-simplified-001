@@ -267,6 +267,25 @@ class KnowledgeBaseAPIClient:
             >>> print(f"Created KB: {kb['id']}")
         """
         return self._request("POST", "/knowledge-bases", json=kb_data)
+
+    def list_embedding_models(self, include_all: bool = False) -> Dict[str, Any]:
+        """
+        获取可用的嵌入模型列表。
+
+        Args:
+            include_all: 是否包含所有 Ollama 模型（不仅仅是嵌入模型）
+
+        Returns:
+            包含 models、default_model 等信息的字典
+
+        Example:
+            >>> client = KnowledgeBaseAPIClient()
+            >>> result = client.list_embedding_models()
+            >>> for model in result['models']:
+            ...     print(model['name'], model.get('dimension'))
+        """
+        params = {"include_all": include_all}
+        return self._request("GET", "/knowledge-bases/embedding-models", params=params)
     
     def update_knowledge_base(
         self,
@@ -348,7 +367,8 @@ class KnowledgeBaseAPIClient:
         self,
         kb_id: str,
         file_path: str,
-        file_name: Optional[str] = None
+        file_name: Optional[str] = None,
+        file_source: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Upload a single file to knowledge base.
@@ -357,6 +377,7 @@ class KnowledgeBaseAPIClient:
             kb_id: Knowledge base ID
             file_path: Path to file to upload
             file_name: Optional custom file name (defaults to basename of file_path)
+            file_source: Optional original page URL to persist with file metadata
             
         Returns:
             Created file entity details
@@ -373,17 +394,23 @@ class KnowledgeBaseAPIClient:
             file_name = os.path.basename(file_path)
         
         with open(file_path, "rb") as f:
+            params = {}
+            if file_source:
+                params["file_source"] = file_source
+
             files = {"file": (file_name, f)}
             return self._request(
                 "POST",
                 f"/knowledge-bases/{kb_id}/files",
-                files=files
+                files=files,
+                params=params or None
             )
     
     def upload_files(
         self,
         kb_id: str,
-        files: List[Any]
+        files: List[Any],
+        original_page_url: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """
         Upload multiple files to knowledge base.
@@ -391,6 +418,7 @@ class KnowledgeBaseAPIClient:
         Args:
             kb_id: Knowledge base ID
             files: List of file objects (from Streamlit file_uploader)
+            original_page_url: Optional URL tying all uploaded files to their source page
             
         Returns:
             List of created file entity details
@@ -404,6 +432,10 @@ class KnowledgeBaseAPIClient:
         """
         results = []
         
+        params = {}
+        if original_page_url:
+            params["file_source"] = original_page_url
+
         for file in files:
             try:
                 # Handle Streamlit UploadedFile objects
@@ -419,7 +451,8 @@ class KnowledgeBaseAPIClient:
                     result = self._request(
                         "POST",
                         f"/knowledge-bases/{kb_id}/files",
-                        files=files_data
+                        files=files_data,
+                        params=params or None
                     )
                     results.append(result)
                 else:

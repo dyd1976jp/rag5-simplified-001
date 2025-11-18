@@ -5,10 +5,13 @@ This module provides FastAPI routes for knowledge base management operations.
 """
 
 import logging
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
+
+import requests
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Query, status
 from pydantic import BaseModel, Field, field_validator
 
+from rag5.config import settings
 from rag5.core.knowledge_base import (
     KnowledgeBaseManager,
     KnowledgeBase,
@@ -23,6 +26,11 @@ from rag5.core.knowledge_base import (
     FileNotFoundError as KBFileNotFoundError,
     FileValidationError
 )
+from rag5.utils.embedding_models import (
+    build_fallback_model_infos,
+    is_embedding_model,
+    resolve_embedding_dimension,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +39,26 @@ kb_router = APIRouter(prefix="/knowledge-bases", tags=["knowledge-bases"])
 
 # Global manager instance (will be set by the app)
 _kb_manager: Optional[KnowledgeBaseManager] = None
+
+
+async def _process_file_background(manager: KnowledgeBaseManager, file_id: str):
+    """
+    后台处理文件的辅助函数
+
+    在上传文件后自动调用，将文件从 PENDING 状态处理到 SUCCEEDED 或 FAILED。
+    此函数在后台异步运行，不会阻塞上传请求的响应。
+
+    参数:
+        manager: KnowledgeBaseManager 实例
+        file_id: 要处理的文件 ID
+    """
+    try:
+        logger.info(f"后台任务开始处理文件: {file_id}")
+        await manager.process_file(file_id)
+        logger.info(f"后台任务成功处理文件: {file_id}")
+    except Exception as e:
+        logger.error(f"后台任务处理文件失败 {file_id}: {e}", exc_info=True)
+        # 错误已经在 process_file 中记录到数据库，这里只需要记录日志
 
 
 def set_kb_manager(manager: KnowledgeBaseManager):
@@ -122,6 +150,7 @@ class FileResponse(BaseModel):
     chunk_count: int
     created_at: str
     updated_at: str
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
 class FileListResponse(BaseModel):
@@ -159,6 +188,23 @@ class QueryResponse(BaseModel):
     total_results: int
 
 
+class EmbeddingModelInfo(BaseModel):
+    """Embedding model metadata"""
+    name: str
+    display_name: str
+    family: str
+    dimension: Optional[int] = None
+    tags: List[str] = Field(default_factory=list)
+
+
+class EmbeddingModelsResponse(BaseModel):
+    """Embedding model list response"""
+    models: List[EmbeddingModelInfo]
+    default_model: str
+    source: str = Field(default="ollama", description="Data source (ollama/fallback)")
+    error: Optional[str] = None
+
+
 class ErrorResponse(BaseModel):
     """Error response model"""
     detail: str
@@ -194,7 +240,8 @@ def file_to_response(file: FileEntity) -> FileResponse:
         failed_reason=file.failed_reason,
         chunk_count=file.chunk_count,
         created_at=file.created_at.isoformat(),
-        updated_at=file.updated_at.isoformat()
+        updated_at=file.updated_at.isoformat(),
+        metadata=file.metadata
     )
 
 
@@ -268,6 +315,165 @@ async def create_knowledge_base(request: CreateKBRequest) -> KBResponse:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create knowledge base: {str(e)}"
         )
+
+
+@kb_router.get(
+    "/embedding-models",
+    response_model=EmbeddingModelsResponse,
+    summary="List available embedding models",
+    description="Fetch embedding-capable models from Ollama or provide a fallback list."
+)
+async def list_embedding_models(
+    include_all: bool = Query(
+        default=False,
+        description="Include all Ollama models, not just embedding models"
+    )
+) -> EmbeddingModelsResponse:
+    """
+    Retrieve embedding models from the configured embedding backend.
+
+    Args:
+        include_all: If True, include all models (not just embedding models).
+                     Non-embedding models will be marked in their display_name.
+    """
+    default_model = settings.embed_model
+    default_dimension = settings.vector_dim
+    embedding_backend = settings.embedding_backend.lower()
+
+    # === LM Studio Backend ===
+    if embedding_backend == "lmstudio":
+        lm_studio_host = settings.lm_studio_host
+        lm_studio_model = settings.lm_studio_model
+
+        try:
+            response = requests.get(f"{lm_studio_host}/models", timeout=3)
+            response.raise_for_status()
+            models_data = response.json()
+
+            embedding_models: List[EmbeddingModelInfo] = []
+
+            for model in models_data.get("data", []):
+                name = model.get("id")
+                if not name:
+                    continue
+
+                model_info = EmbeddingModelInfo(
+                    name=name,
+                    display_name=name,
+                    family="lmstudio",
+                    dimension=default_dimension,  # LM Studio doesn't report dimension
+                    tags=["lmstudio"],
+                )
+                embedding_models.append(model_info)
+
+            if not embedding_models:
+                # Return configured model as fallback
+                fallback = [
+                    EmbeddingModelInfo(
+                        name=lm_studio_model,
+                        display_name=f"{lm_studio_model} (configured)",
+                        family="lmstudio",
+                        dimension=default_dimension,
+                        tags=["lmstudio", "configured"]
+                    )
+                ]
+                return EmbeddingModelsResponse(
+                    models=fallback,
+                    default_model=lm_studio_model,
+                    source="lmstudio-fallback",
+                    error="No models reported by LM Studio; using configured model.",
+                )
+
+            return EmbeddingModelsResponse(
+                models=embedding_models,
+                default_model=lm_studio_model,
+                source="lmstudio",
+            )
+
+        except requests.RequestException as e:
+            logger.warning(f"Failed to fetch models from LM Studio: {e}")
+            fallback = [
+                EmbeddingModelInfo(
+                    name=lm_studio_model,
+                    display_name=f"{lm_studio_model} (configured)",
+                    family="lmstudio",
+                    dimension=default_dimension,
+                    tags=["lmstudio", "configured"]
+                )
+            ]
+            return EmbeddingModelsResponse(
+                models=fallback,
+                default_model=lm_studio_model,
+                source="lmstudio-fallback",
+                error=f"Failed to connect to LM Studio at {lm_studio_host}: {e}",
+            )
+
+    # === Ollama Backend ===
+    else:
+        ollama_host = settings.ollama_host
+
+        try:
+            response = requests.get(f"{ollama_host}/api/tags", timeout=3)
+            response.raise_for_status()
+            models_data = response.json()
+
+            embedding_models: List[EmbeddingModelInfo] = []
+            other_models: List[EmbeddingModelInfo] = []
+
+            for model in models_data.get("models", []):
+                name = model.get("name")
+                if not name:
+                    continue
+                family = (model.get("details", {}) or {}).get("family", "") or ""
+                is_embed = is_embedding_model(name, family)
+
+                # 构建模型信息
+                model_info = EmbeddingModelInfo(
+                    name=name,
+                    display_name=name if is_embed else f"{name} (通用模型)",
+                    family=family or "unknown",
+                    dimension=resolve_embedding_dimension(name, default_dimension),
+                    tags=(model.get("details", {}) or {}).get("tags", []) or [],
+                )
+
+                if is_embed:
+                    embedding_models.append(model_info)
+                elif include_all:
+                    other_models.append(model_info)
+
+            # 优先返回嵌入模型，然后是其他模型
+            all_models = embedding_models + other_models
+
+            if not all_models:
+                fallback = [
+                    EmbeddingModelInfo(**info)
+                    for info in build_fallback_model_infos(default_dimension, [default_model])
+                ]
+                return EmbeddingModelsResponse(
+                    models=fallback,
+                    default_model=default_model,
+                    source="fallback",
+                    error="No embedding models reported by Ollama; using fallback list.",
+                )
+
+            return EmbeddingModelsResponse(
+                models=all_models,
+                default_model=default_model,
+                source="ollama" if embedding_models else "ollama-mixed",
+            )
+
+        except requests.RequestException as e:
+            logger.warning(f"Failed to fetch embedding models from Ollama: {e}")
+            fallback = [
+                EmbeddingModelInfo(**info)
+                for info in build_fallback_model_infos(default_dimension, [default_model])
+            ]
+            return EmbeddingModelsResponse(
+                models=fallback,
+                default_model=default_model,
+                source="fallback",
+                error=f"Failed to connect to Ollama at {ollama_host}: {e}",
+            )
 
 
 @kb_router.get(
@@ -501,52 +707,71 @@ async def delete_knowledge_base(kb_id: str):
 )
 async def upload_file(
     kb_id: str,
-    file: UploadFile = File(..., description="File to upload")
+    file: UploadFile = File(..., description="File to upload"),
+    auto_process: bool = Query(
+        default=True,
+        description="Automatically process file after upload"
+    ),
+    file_source: Optional[str] = Query(
+        default=None,
+        description="Original page URL associated with the uploaded file"
+    )
 ) -> FileResponse:
     """
     Upload a file to knowledge base.
-    
+
     Args:
         kb_id: Knowledge base ID
         file: File to upload
-        
+        auto_process: Whether to automatically process the file (default: True)
+
     Returns:
         Created file entity details
-        
+
     Raises:
         HTTPException: If upload fails
     """
     import tempfile
     import os
-    
+    import asyncio
+
     temp_file_path = None
-    
+
     try:
         manager = get_kb_manager()
-        
+
         # Validate file
         if not file.filename:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="File name is required"
             )
-        
+
         # Save uploaded file to temporary location
         with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[1]) as temp_file:
             temp_file_path = temp_file.name
             content = await file.read()
             temp_file.write(content)
-        
+
         # Upload file to knowledge base
+        metadata = {"original_page_url": file_source} if file_source else None
         file_entity = await manager.upload_file(
             kb_id=kb_id,
             file_path=temp_file_path,
-            file_name=file.filename
+            file_name=file.filename,
+            file_metadata=metadata
         )
-        
+
         logger.info(f"Uploaded file: {file.filename} to KB {kb_id} (File ID: {file_entity.id})")
+
+        # Automatically process the file in the background if auto_process is True
+        if auto_process:
+            logger.info(f"Starting background processing for file {file_entity.id}")
+            # 启动后台任务处理文件
+            asyncio.create_task(_process_file_background(manager, file_entity.id))
+
         return file_to_response(file_entity)
-        
+
     except KnowledgeBaseNotFoundError as e:
         logger.warning(f"Knowledge base not found: {kb_id}")
         raise HTTPException(

@@ -1,203 +1,3 @@
-# RAG5 Simplified System
-
-一个本地部署的检索增强生成（RAG）系统，具有智能查询优化能力和模块化架构。
-
-A locally-deployed Retrieval-Augmented Generation (RAG) system with intelligent query optimization capabilities and modular architecture.
-
-## 特性 Features
-
-- **本地优先 Local-First**: 所有组件本地运行，无需外部 API 依赖
-- **LLM 驱动的查询优化 LLM-Driven Query Optimization**: 自动增强查询以获得更好的检索效果
-- **向量搜索 Vector Search**: 使用 Qdrant 进行快速准确的文档检索
-- **多种接口 Multiple Interfaces**: REST API 和 Web UI
-- **模块化架构 Modular Architecture**: 清晰的代码组织，易于扩展和维护
-- **简单配置 Easy Setup**: 合理的默认配置，快速上手
-- **中文优化 Chinese Optimization**: 专门优化的中文文本处理和分块策略
-- **检索优化 Retrieval Optimization**: 自适应搜索、混合搜索和查询扩展
-- **完善的调试工具 Comprehensive Debugging Tools**: 数据库诊断、日志系统和调试脚本
-- **详细的日志记录 Detailed Logging**: 完整追踪从摄取到检索的全流程
-
-## 技术栈 Tech Stack
-
-- **LLM & Embeddings**: Ollama (qwen2.5:7b, bge-m3)
-- **Vector Database**: Qdrant
-- **Orchestration**: LangChain + LangGraph
-- **API**: FastAPI
-- **UI**: Streamlit
-- **Language**: Python 3.9+
-
-## 快速开始 Quick Start
-
-### 1. 安装依赖 Install Dependencies
-
-```bash
-# 安装 Python 包
-pip install -r requirements.txt
-
-# 或者安装为可编辑包（推荐用于开发）
-pip install -e .
-```
-
-### 2. 启动服务 Start Services
-
-```bash
-# 启动 Ollama
-ollama serve
-
-# 启动 Qdrant (使用 Docker)
-docker run -p 6333:6333 -v $(pwd)/qdrant_storage:/qdrant/storage qdrant/qdrant
-```
-
-### 3. 拉取模型 Pull Models
-
-**方式 A: 使用安装脚本（推荐）**
-```bash
-./scripts/setup_models.sh
-```
-
-**方式 B: 手动安装**
-```bash
-ollama pull qwen2.5:7b
-ollama pull bge-m3
-```
-
-### 4. 配置环境 Configure Environment
-
-```bash
-cp .env.example .env
-# 根据需要编辑 .env 文件自定义配置
-```
-
-### 5. 摄取文档 Ingest Documents
-
-```bash
-# 使用脚本入口点（如果已安装包）
-rag5-ingest /path/to/your/documents
-
-# 或直接运行脚本
-python scripts/ingest.py /path/to/your/documents
-```
-
-### 6. 运行应用 Run the Application
-
-**方式 A: Web UI (Streamlit)**
-```bash
-# 使用脚本入口点（如果已安装包）
-rag5-ui
-
-# 或直接运行脚本
-python scripts/run_ui.py
-```
-
-**方式 B: REST API (FastAPI)**
-```bash
-# 使用脚本入口点（如果已安装包）
-rag5-api
-
-# 或直接运行脚本
-python scripts/run_api.py
-```
-
-## 项目结构 Project Structure
-
-```
-rag5-simplified/
-├── README.md                      # 项目主文档
-├── requirements.txt               # Python 依赖列表
-├── setup.py                       # 包安装配置
-├── .env.example                   # 环境变量模板
-│
-├── rag5/                          # 主包目录
-│   ├── __init__.py               # 包初始化，导出主要接口
-│   │
-│   ├── config/                    # 配置模块
-│   │   ├── __init__.py           # 导出配置接口
-│   │   ├── README.md             # 配置模块说明
-│   │   ├── loader.py             # 环境变量加载
-│   │   ├── validator.py          # 配置验证
-│   │   ├── defaults.py           # 默认值定义
-│   │   └── settings.py           # 配置访问接口
-│   │
-│   ├── core/                      # 核心模块
-│   │   ├── __init__.py           # 导出核心接口
-│   │   ├── README.md             # 核心模块说明
-│   │   ├── agent/                # 代理子模块
-│   │   │   ├── agent.py          # 主代理类
-│   │   │   ├── initializer.py   # 代理初始化
-│   │   │   ├── history.py        # 对话历史管理
-│   │   │   ├── messages.py       # 消息处理
-│   │   │   └── errors.py         # 错误处理和重试
-│   │   └── prompts/              # 提示词子模块
-│   │       ├── system.py         # 系统提示词
-│   │       └── tools.py          # 工具描述提示词
-│   │
-│   ├── tools/                     # 工具模块
-│   │   ├── __init__.py           # 导出工具接口
-│   │   ├── README.md             # 工具模块说明
-│   │   ├── registry.py           # 工具注册器
-│   │   ├── base.py               # 工具基类
-│   │   ├── search/               # 搜索工具子模块
-│   │   ├── embeddings/           # 嵌入工具子模块
-│   │   └── vectordb/             # 向量数据库子模块
-│   │
-│   ├── ingestion/                 # 数据摄取模块
-│   │   ├── __init__.py           # 导出摄取接口
-│   │   ├── README.md             # 摄取模块说明
-│   │   ├── pipeline.py           # 摄取流程编排
-│   │   ├── loaders/              # 文档加载器子模块
-│   │   ├── splitters/            # 文档分块器子模块
-│   │   └── vectorizers/          # 向量化子模块
-│   │
-│   ├── interfaces/                # 接口模块
-│   │   ├── __init__.py           # 导出接口
-│   │   ├── README.md             # 接口模块说明
-│   │   ├── api/                  # REST API 子模块
-│   │   └── ui/                   # Web UI 子模块
-│   │
-│   └── utils/                     # 工具函数模块
-│       └── __init__.py           # 导出工具函数
-│
-├── scripts/                       # 脚本目录
-│   ├── README.md                 # 脚本说明
-│   ├── ingest.py                 # 数据摄取脚本
-│   ├── run_api.py                # API 启动脚本
-│   ├── run_ui.py                 # UI 启动脚本
-│   └── setup_models.sh           # 模型安装脚本
-│
-├── tests/                         # 测试目录
-│   ├── conftest.py               # pytest 配置
-│   ├── test_config/              # 配置模块测试
-│   ├── test_core/                # 核心模块测试
-│   ├── test_tools/               # 工具模块测试
-│   ├── test_ingestion/           # 摄取模块测试
-│   ├── test_interfaces/          # 接口模块测试
-│   └── test_data/                # 测试数据
-│
-└── docs/                          # 文档目录（可选）
-    ├── migration_guide.md        # 迁移指南
-    ├── api_reference.md          # API 参考
-    └── development.md            # 开发指南
-```
-
-## 配置 Configuration
-
-所有配置通过 `.env` 文件中的环境变量管理：
-
-All configuration is managed through environment variables in the `.env` file:
-
-### 基础配置 Basic Configuration
-
-| 变量 Variable | 默认值 Default | 说明 Description |
-|----------|---------|-------------|
-| `OLLAMA_HOST` | `http://localhost:11434` | Ollama 服务 URL / Ollama service URL |
-| `LLM_MODEL` | `qwen2.5:7b` | LLM 模型名称 / LLM model name |
-| `EMBED_MODEL` | `bge-m3` | 嵌入模型名称 / Embedding model name |
-| `QDRANT_URL` | `http://localhost:6333` | Qdrant 服务 URL / Qdrant service URL |
-| `COLLECTION_NAME` | `knowledge_base` | 向量集合名称 / Vector collection name |
-
-### 检索配置 Retrieval Configuration
-
-| 变量 Variable | 默认值 Default | 说明 Description |
 |----------|---------|-------------|
 | `TOP_K` | `5` | 搜索结果数量 / Number of search results |
 | `SIMILARITY_THRESHOLD` | `0.3` | 最小相似度分数 / Minimum similarity score |
@@ -965,3 +765,101 @@ python -m rag5.tools.index_manager reindex --directory ./docs --force
 ## License
 
 MIT
+# RAG5 Simplified System
+
+面向本地部署的检索增强生成（RAG）服务，提供 FastAPI/Streamlit 接口与可插拔工具链，默认即能跑通知识库摄取与问答流程。
+
+## 必备环境
+
+- Python 3.9+
+- Ollama（需提供 `qwen2.5:7b` 与 `bge-m3`）
+- Qdrant（本地 Docker 版本即可）
+- `.env` 配置文件，可从 `.env.example` 复制
+
+## 快速流程
+
+```bash
+# 1. 安装依赖
+pip install -e .
+
+# 2. 拉取模型（会同时下载所需 Ollama 模型）
+./scripts/setup_models.sh
+
+# 3. 配置环境变量
+cp .env.example .env
+
+# 4. 摄取文档
+python scripts/ingest.py /path/to/docs
+
+# 5. 启动 Web UI 或 API
+python scripts/run_ui.py      # Streamlit
+python scripts/run_api.py     # FastAPI
+```
+
+## 嵌入模型选择 Embedding Model Selection
+
+RAG5 支持多种嵌入模型。**重要提示**: `bge-m3` 在某些 Ollama 版本中存在稳定性问题,推荐使用 `nomic-embed-text`。
+
+RAG5 supports multiple embedding models. **Important**: `bge-m3` has stability issues in some Ollama versions. We recommend using `nomic-embed-text`.
+
+### 查看支持的模型 View Supported Models
+
+```bash
+# 查看所有支持的嵌入模型及其配置
+python -m rag5.utils.embedding_models
+```
+
+### 推荐模型 Recommended Models
+
+| 模型 Model | 维度 Dim | 大小 Size | 稳定性 Stability | 性能 Performance | 质量 Quality |
+|------------|---------|-----------|-----------------|------------------|-------------|
+| **nomic-embed-text** ⭐ | 768 | 274MB | 稳定 Stable | 快 Fast | 中高 Med-High |
+| mxbai-embed-large | 1024 | 670MB | 稳定 Stable | 中 Medium | 高 High |
+| all-minilm | 384 | 23MB | 稳定 Stable | 很快 Very Fast | 中 Medium |
+| bge-large | 1024 | 1340MB | 稳定 Stable | 中 Medium | 高 High |
+| bge-m3 ⚠️ | 1024 | 567MB | 不稳定 Unstable | 慢 Slow | 高 High |
+
+### 切换模型 Switch Models
+
+```bash
+# 1. 拉取新模型
+ollama pull nomic-embed-text
+
+# 2. 更新 .env
+EMBED_MODEL=nomic-embed-text
+VECTOR_DIM=768
+
+# 3. 清理旧索引(可选)
+curl -X DELETE http://localhost:6333/collections/knowledge_base
+
+# 4. 重启应用
+python scripts/run_ui.py
+```
+
+### 故障排除 Troubleshooting
+
+如果遇到嵌入模型相关错误(如 EOF 错误),请参考:
+
+If you encounter embedding model errors (such as EOF errors), see:
+
+- [嵌入故障排除指南 Embedding Troubleshooting Guide](EMBEDDING_TROUBLESHOOTING.md)
+
+## 核心目录
+
+- `rag5/`：主 Python 包（配置、核心代理、工具、摄取、接口）
+- `scripts/`：运行、调试与数据摄取脚本
+- `tests/`：pytest 覆盖核心模块
+- `data/`：默认的知识库数据库与缓存
+- `BK/`：已移出的辅助资料与历史文档，清单见 `BK/moved_files.log`
+
+## 常用脚本与命令
+
+- `python scripts/ingest.py <folder>`：批量摄取文件
+- `python scripts/run_api.py`：启动 FastAPI 服务
+- `python scripts/run_ui.py`：打开 Streamlit 控制台
+- `rag5-ingest` / `rag5-api` / `rag5-ui`：在包安装后可直接调用的入口
+
+## 测试与质量
+
+- 运行 `pytest` 或针对模块的 `pytest tests/test_core/test_agent.py::test_agent_handles_context`
+- 代码风格：`black rag5 tests`，`flake8 rag5`，类型校验 `mypy rag5`

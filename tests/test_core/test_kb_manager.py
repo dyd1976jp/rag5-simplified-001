@@ -17,7 +17,8 @@ from rag5.core.knowledge_base import (
     RetrievalConfig,
     KnowledgeBaseError,
     KnowledgeBaseNotFoundError,
-    KnowledgeBaseAlreadyExistsError
+    KnowledgeBaseAlreadyExistsError,
+    FileStatus
 )
 from rag5.tools.vectordb import QdrantManager
 
@@ -497,6 +498,46 @@ async def test_upload_markdown_file(kb_manager, sample_md_file):
     
     # 清理
     await kb_manager.delete_file(kb.id, file_entity.id)
+    await kb_manager.delete_knowledge_base(kb.id)
+
+
+@pytest.mark.asyncio
+async def test_upload_file_overwrites_existing(kb_manager, sample_text_file):
+    """同名文件再次上传应覆盖旧记录并重复利用文件 ID"""
+    kb = await kb_manager.create_knowledge_base(
+        name="overwrite_kb",
+        description="Overwrite test",
+        embedding_model="nomic-embed-text"
+    )
+
+    first_entity = await kb_manager.upload_file(
+        kb_id=kb.id,
+        file_path=sample_text_file
+    )
+
+    original_md5 = first_entity.file_md5
+    stored_path = Path(first_entity.file_path)
+    assert stored_path.exists()
+
+    # 修改源文件内容，保持名称不变
+    Path(sample_text_file).write_text("Updated content for overwrite test", encoding="utf-8")
+
+    updated_entity = await kb_manager.upload_file(
+        kb_id=kb.id,
+        file_path=sample_text_file
+    )
+
+    assert updated_entity.id == first_entity.id
+    assert updated_entity.file_md5 != original_md5
+    assert updated_entity.status == FileStatus.PENDING
+    assert updated_entity.chunk_count == 0
+    assert Path(updated_entity.file_path).exists()
+
+    files, total = await kb_manager.list_files(kb_id=kb.id)
+    assert total == 1
+    assert files[0].id == first_entity.id
+
+    await kb_manager.delete_file(kb.id, updated_entity.id)
     await kb_manager.delete_knowledge_base(kb.id)
 
 

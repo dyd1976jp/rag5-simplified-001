@@ -15,6 +15,11 @@ from rag5.config.defaults import (
     DEFAULT_LLM_MODEL,
     DEFAULT_EMBED_MODEL,
     DEFAULT_LLM_TIMEOUT,
+    DEFAULT_OLLAMA_TIMEOUT,
+    DEFAULT_OLLAMA_BATCH_SIZE,
+    DEFAULT_EMBEDDING_BACKEND,
+    DEFAULT_LM_STUDIO_HOST,
+    DEFAULT_LM_STUDIO_MODEL,
     DEFAULT_QDRANT_URL,
     DEFAULT_COLLECTION_NAME,
     DEFAULT_VECTOR_DIM,
@@ -143,6 +148,31 @@ class Settings:
     def llm_timeout(self) -> int:
         """LLM 请求超时时间（秒）"""
         return self._loader.get_env_int('LLM_TIMEOUT', DEFAULT_LLM_TIMEOUT)
+
+    @property
+    def ollama_timeout(self) -> int:
+        """Ollama 嵌入请求超时时间（秒）"""
+        return self._loader.get_env_int('OLLAMA_TIMEOUT', DEFAULT_OLLAMA_TIMEOUT)
+
+    @property
+    def ollama_batch_size(self) -> int:
+        """Ollama 批次大小"""
+        return self._loader.get_env_int('OLLAMA_BATCH_SIZE', DEFAULT_OLLAMA_BATCH_SIZE)
+
+    @property
+    def embedding_backend(self) -> str:
+        """嵌入后端类型（ollama 或 lmstudio）"""
+        return self._loader.get_env('EMBEDDING_BACKEND', DEFAULT_EMBEDDING_BACKEND)
+
+    @property
+    def lm_studio_host(self) -> str:
+        """LM Studio 服务地址"""
+        return self._loader.get_env('LM_STUDIO_HOST', DEFAULT_LM_STUDIO_HOST)
+
+    @property
+    def lm_studio_model(self) -> str:
+        """LM Studio 嵌入模型名称"""
+        return self._loader.get_env('LM_STUDIO_MODEL', DEFAULT_LM_STUDIO_MODEL)
 
     # ========================================================================
     # Qdrant 配置属性

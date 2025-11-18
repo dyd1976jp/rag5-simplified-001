@@ -5,7 +5,7 @@ Streamlit 会话状态管理。
 """
 
 import streamlit as st
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 
 
 class SessionState:
@@ -31,6 +31,8 @@ class SessionState:
 
         if "error" not in st.session_state:
             st.session_state.error = None
+        if "last_retrieval_context" not in st.session_state:
+            st.session_state.last_retrieval_context = {}
 
     @staticmethod
     def get_messages() -> List[Dict[str, str]]:
@@ -144,6 +146,28 @@ class SessionState:
             history = history[-limit:]
 
         return history
+
+    @staticmethod
+    def set_last_retrieval_context(context: Optional[Dict[str, Any]]):
+        """
+        设置最近一次检索结果上下文。
+
+        Args:
+            context: 包含查询、知识库 ID、结果列表等信息的字典
+        """
+        SessionState.initialize()
+        st.session_state.last_retrieval_context = context or {}
+
+    @staticmethod
+    def get_last_retrieval_context() -> Dict[str, Any]:
+        """
+        获取最近一次检索结果上下文。
+
+        Returns:
+            字典，包含键: query, kb_id, results, error
+        """
+        SessionState.initialize()
+        return getattr(st.session_state, "last_retrieval_context", {})
 
     @staticmethod
     def get_turn_count() -> int:

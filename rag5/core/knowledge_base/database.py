@@ -402,24 +402,43 @@ class KnowledgeBaseDatabase:
     def get_file(self, file_id: str) -> Optional[FileEntity]:
         """
         根据 ID 获取文件
-        
+
         参数:
             file_id: 文件 ID
-        
+
         返回:
             文件实体，如果不存在则返回 None
         """
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 SELECT * FROM kb_files WHERE id = ?
             """, (file_id,))
-            
+
             row = cursor.fetchone()
             if not row:
                 return None
-            
+
+            return self._row_to_file(row)
+
+    def get_file_by_name(self, kb_id: str, file_name: str) -> Optional[FileEntity]:
+        """根据知识库和文件名获取文件记录"""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+
+            cursor.execute(
+                """
+                SELECT * FROM kb_files
+                WHERE kb_id = ? AND file_name = ?
+                """,
+                (kb_id, file_name)
+            )
+
+            row = cursor.fetchone()
+            if not row:
+                return None
+
             return self._row_to_file(row)
     
     def list_files(
@@ -516,9 +535,52 @@ class KnowledgeBaseDatabase:
             
             if cursor.rowcount > 0:
                 logger.info(f"更新文件状态: {file_id} -> {status.value}")
-        
+
         # Get the updated file after commit
         return self.get_file(file_id)
+
+    def update_file(self, file: FileEntity) -> FileEntity:
+        """更新文件记录的核心字段"""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+
+            cursor.execute(
+                """
+                UPDATE kb_files
+                SET file_name = ?,
+                    file_path = ?,
+                    file_extension = ?,
+                    file_size = ?,
+                    file_md5 = ?,
+                    status = ?,
+                    failed_reason = ?,
+                    chunk_count = ?,
+                    updated_at = ?,
+                    metadata = ?
+                WHERE id = ? AND kb_id = ?
+                """,
+                (
+                    file.file_name,
+                    file.file_path,
+                    file.file_extension,
+                    file.file_size,
+                    file.file_md5,
+                    file.status.value,
+                    file.failed_reason,
+                    file.chunk_count,
+                    file.updated_at.isoformat(),
+                    json.dumps(file.metadata),
+                    file.id,
+                    file.kb_id
+                )
+            )
+
+            if cursor.rowcount == 0:
+                raise ValueError(f"未找到要更新的文件记录: {file.id}")
+
+            logger.info(f"更新文件记录: {file.file_name} (ID: {file.id})")
+
+        return file
     
     def delete_file(self, file_id: str) -> bool:
         """

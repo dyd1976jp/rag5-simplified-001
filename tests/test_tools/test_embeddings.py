@@ -4,32 +4,36 @@
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
+
 from rag5.tools.embeddings import OllamaEmbeddingsManager
 
 
 @pytest.fixture
 def mock_ollama_api():
     """Mock Ollama API"""
-    with patch('requests.get') as mock_get, \
-         patch('requests.post') as mock_post:
-
-        # Mock list models response
-        mock_list_response = Mock()
-        mock_list_response.status_code = 200
-        mock_list_response.json.return_value = {
+    with patch('requests.get') as mock_get:
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
             "models": [{"name": "bge-m3"}]
         }
-        mock_get.return_value = mock_list_response
+        mock_get.return_value = mock_response
+        yield mock_get
 
-        # Mock embed response
-        mock_embed_response = Mock()
-        mock_embed_response.status_code = 200
-        mock_embed_response.json.return_value = {
-            "embedding": [0.1] * 1024
-        }
-        mock_post.return_value = mock_embed_response
 
-        yield mock_get, mock_post
+@pytest.fixture
+def mock_embeddings():
+    """Mock LangChain OllamaEmbeddings"""
+    with patch('rag5.tools.embeddings.ollama_embeddings.OllamaEmbeddings') as mock_cls:
+        mock_instance = MagicMock()
+
+        def _embed_documents(texts):
+            return [[0.1] * 1024 for _ in texts]
+
+        mock_instance.embed_documents.side_effect = _embed_documents
+        mock_instance.embed_query.side_effect = lambda text: [0.1] * 1024
+        mock_cls.return_value = mock_instance
+        yield mock_instance, mock_cls
 
 
 def test_embeddings_manager_initialization():
@@ -85,7 +89,7 @@ def test_check_model_available_connection_error():
         assert manager.check_model_available() is False
 
 
-def test_embed_query_success(mock_ollama_api):
+def test_embed_query_success(mock_ollama_api, mock_embeddings):
     """测试嵌入查询（成功）"""
     manager = OllamaEmbeddingsManager(
         model="bge-m3",
@@ -106,11 +110,11 @@ def test_embed_query_empty_text():
         base_url="http://localhost:11434"
     )
 
-    with pytest.raises(ValueError, match="Text cannot be empty"):
+    with pytest.raises(ValueError, match="查询文本不能为空"):
         manager.embed_query("")
 
 
-def test_embed_documents_success(mock_ollama_api):
+def test_embed_documents_success(mock_ollama_api, mock_embeddings):
     """测试批量嵌入文档（成功）"""
     manager = OllamaEmbeddingsManager(
         model="bge-m3",
@@ -132,87 +136,87 @@ def test_embed_documents_empty_list():
         base_url="http://localhost:11434"
     )
 
-    vectors = manager.embed_documents([])
-    assert vectors == []
+    with pytest.raises(ValueError, match="文档文本列表不能为空"):
+        manager.embed_documents([])
 
 
-def test_embed_with_retry():
+def test_embed_documents_all_empty():
+    """测试所有文档文本都为空"""
+    manager = OllamaEmbeddingsManager(
+        model="bge-m3",
+        base_url="http://localhost:11434"
+    )
+
+    with pytest.raises(ValueError, match="所有文档文本都为空"):
+        manager.embed_documents(["", "   "])
+
+
+def test_embed_with_retry(mock_ollama_api, mock_embeddings):
     """测试嵌入重试逻辑"""
-    with patch('requests.post') as mock_post:
-        # 第一次失败，第二次成功
-        mock_post.side_effect = [
-            Exception("Temporary error"),
-            Mock(
-                status_code=200,
-                json=lambda: {"embedding": [0.1] * 1024}
-            )
-        ]
+    manager = OllamaEmbeddingsManager(
+        model="bge-m3",
+        base_url="http://localhost:11434"
+    )
 
-        manager = OllamaEmbeddingsManager(
-            model="bge-m3",
-            base_url="http://localhost:11434"
-        )
+    mock_instance, _ = mock_embeddings
+    mock_instance.embed_query.side_effect = [
+        Exception("Temporary error"),
+        [0.1] * 1024
+    ]
 
+    with patch('rag5.tools.vectordb.retry.time.sleep'):
         vector = manager.embed_query("测试")
 
-        assert len(vector) == 1024
-        assert mock_post.call_count == 2
+    assert len(vector) == 1024
+    assert mock_instance.embed_query.call_count == 2
 
 
-def test_embed_max_retries_exceeded():
+def test_embed_max_retries_exceeded(mock_ollama_api, mock_embeddings):
     """测试超过最大重试次数"""
-    with patch('requests.post') as mock_post:
-        mock_post.side_effect = Exception("Persistent error")
+    manager = OllamaEmbeddingsManager(
+        model="bge-m3",
+        base_url="http://localhost:11434"
+    )
 
-        manager = OllamaEmbeddingsManager(
-            model="bge-m3",
-            base_url="http://localhost:11434"
-        )
+    mock_instance, _ = mock_embeddings
+    mock_instance.embed_query.side_effect = Exception("Persistent error")
 
-        with pytest.raises(Exception):
+    with patch('rag5.tools.vectordb.retry.time.sleep'):
+        with pytest.raises(Exception, match="Persistent error"):
             manager.embed_query("测试")
 
 
-def test_embed_with_custom_base_url():
+def test_embed_with_custom_base_url(mock_ollama_api, mock_embeddings):
     """测试使用自定义base_url"""
-    with patch('requests.post') as mock_post:
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {"embedding": [0.1] * 1024}
-        mock_post.return_value = mock_response
+    manager = OllamaEmbeddingsManager(
+        model="bge-m3",
+        base_url="http://custom-host:8080"
+    )
 
-        manager = OllamaEmbeddingsManager(
-            model="bge-m3",
-            base_url="http://custom-host:8080"
-        )
+    manager.embed_query("测试")
 
-        manager.embed_query("测试")
-
-        # 验证使用了自定义URL
-        call_args = mock_post.call_args
-        assert "custom-host:8080" in call_args[0][0]
+    _, mock_cls = mock_embeddings
+    mock_cls.assert_called_with(
+        model="bge-m3",
+        base_url="http://custom-host:8080"
+    )
 
 
-def test_embed_batch_processing():
+def test_embed_batch_processing(mock_ollama_api, mock_embeddings):
     """测试批量处理"""
-    with patch('requests.post') as mock_post:
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {"embedding": [0.1] * 1024}
-        mock_post.return_value = mock_response
+    manager = OllamaEmbeddingsManager(
+        model="bge-m3",
+        base_url="http://localhost:11434",
+        batch_size=10
+    )
 
-        manager = OllamaEmbeddingsManager(
-            model="bge-m3",
-            base_url="http://localhost:11434"
-        )
+    mock_instance, _ = mock_embeddings
 
-        # 嵌入大量文档
-        texts = [f"文档{i}" for i in range(50)]
-        vectors = manager.embed_documents(texts)
+    texts = [f"文档{i}" for i in range(50)]
+    vectors = manager.embed_documents(texts)
 
-        assert len(vectors) == 50
-        # 应该调用了50次（每个文档一次）
-        assert mock_post.call_count == 50
+    assert len(vectors) == 50
+    assert mock_instance.embed_documents.call_count == 5
 
 
 if __name__ == "__main__":

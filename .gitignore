@@ -41,6 +41,11 @@ qdrant_storage/
 *.log
 logs/
 
+# Data files and backups
+data/
+docs/kb_*/
+*.backup.*
+
 # OS
 .DS_Store
 Thumbs.db

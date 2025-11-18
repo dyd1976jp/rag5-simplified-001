@@ -585,7 +585,8 @@ class KnowledgeBaseManager:
         self,
         kb_id: str,
         file_path: str,
-        file_name: Optional[str] = None
+        file_name: Optional[str] = None,
+        file_metadata: Optional[Dict[str, Any]] = None
     ) -> FileEntity:
         """
         上传文件到知识库
@@ -664,18 +665,34 @@ class KnowledgeBaseManager:
             # 6. 计算 MD5 哈希
             file_md5 = self._calculate_md5(source_path)
             logger.debug(f"文件 MD5: {file_md5}")
-            
-            # 7. 创建文件 ID 和存储路径
-            file_id = f"file_{uuid.uuid4().hex}"
-            
+
+            # 7. 检查是否存在同名文件（与 PAI-RAG 行为保持一致）
+            existing_file = self.db.get_file_by_name(kb_id, file_name)
+            overwrite_existing = existing_file is not None
+
+            if overwrite_existing:
+                file_id = existing_file.id
+                logger.info(
+                    f"知识库 {kb_id} 中已存在文件 {file_name}，将覆盖原有记录"
+                )
+            else:
+                file_id = f"file_{uuid.uuid4().hex}"
+
             # 使用知识库 ID 作为子目录
             kb_storage_dir = self.file_storage_path / kb_id
             kb_storage_dir.mkdir(parents=True, exist_ok=True)
-            
-            # 使用文件 ID 作为文件名，保留扩展名
-            stored_file_name = f"{file_id}{file_extension}"
-            stored_file_path = kb_storage_dir / stored_file_name
-            
+
+            stored_file_path = kb_storage_dir / f"{file_id}{file_extension}"
+            old_stored_path = Path(existing_file.file_path) if overwrite_existing else None
+
+            # 覆盖上传时先清理旧向量数据，避免残留重复块
+            if overwrite_existing and existing_file.chunk_count > 0:
+                cleanup_success = await self.vector_manager.delete_by_file_id(kb_id, file_id)
+                if cleanup_success:
+                    logger.debug(f"已清理旧向量数据: {file_id}")
+                else:
+                    logger.warning(f"未能清理旧向量数据: {file_id}")
+
             # 8. 复制文件到存储位置
             try:
                 shutil.copy2(source_path, stored_file_path)
@@ -683,8 +700,21 @@ class KnowledgeBaseManager:
             except Exception as e:
                 logger.error(f"复制文件失败: {e}")
                 raise KnowledgeBaseError(f"存储文件失败: {e}")
-            
+
+            if overwrite_existing and old_stored_path and old_stored_path != stored_file_path:
+                # 扩展名发生变化时，清理老文件
+                try:
+                    if old_stored_path.exists():
+                        old_stored_path.unlink()
+                except Exception as cleanup_error:
+                    logger.warning(f"清理旧文件失败: {cleanup_error}")
+
             # 9. 创建 FileEntity 记录
+            created_at = existing_file.created_at if overwrite_existing else datetime.now()
+            metadata = dict(existing_file.metadata) if overwrite_existing else {}
+            if file_metadata:
+                metadata.update(file_metadata)
+
             file_entity = FileEntity(
                 id=file_id,
                 kb_id=kb_id,
@@ -694,14 +724,21 @@ class KnowledgeBaseManager:
                 file_size=file_size,
                 file_md5=file_md5,
                 status=FileStatus.PENDING,
-                created_at=datetime.now(),
-                updated_at=datetime.now()
+                failed_reason=None,
+                chunk_count=0,
+                created_at=created_at,
+                updated_at=datetime.now(),
+                metadata=metadata
             )
             
             # 10. 保存到数据库
             try:
-                self.db.create_file(file_entity)
-                logger.debug(f"文件记录已创建: {file_id}")
+                if overwrite_existing:
+                    self.db.update_file(file_entity)
+                    logger.debug(f"文件记录已更新: {file_id}")
+                else:
+                    self.db.create_file(file_entity)
+                    logger.debug(f"文件记录已创建: {file_id}")
             except Exception as e:
                 # 回滚：删除已存储的文件
                 logger.error(f"创建文件记录失败，删除已存储的文件: {e}")
@@ -1062,23 +1099,30 @@ class KnowledgeBaseManager:
             
             try:
                 # 导入嵌入管理器
-                from rag5.tools.embeddings import OllamaEmbeddingsManager
                 from rag5.config import settings
-                
-                # 使用知识库的 embedding_model
+                from rag5.tools.embeddings import OllamaEmbeddingsManager
+
+                # 使用 Ollama 嵌入
+                logger.info("使用 Ollama 嵌入后端")
                 embeddings_manager = OllamaEmbeddingsManager(
-                    model_name=kb.embedding_model,
-                    base_url=settings.ollama_host
+                    model=kb.embedding_model,
+                    base_url=settings.ollama_host,
+                    batch_size=settings.ollama_batch_size
                 )
-                
-                logger.debug(f"使用嵌入模型: {kb.embedding_model}")
+                logger.debug(f"使用 Ollama 嵌入模型: {kb.embedding_model}")
                 
                 # 提取文本内容
                 texts = [chunk.page_content for chunk in chunks]
-                
+
                 # 批量生成嵌入
+                # 使用 asyncio.to_thread 在线程池中运行同步的 HTTP 请求
+                # 这可以避免在异步上下文中阻塞事件循环
+                import asyncio
                 logger.debug(f"生成 {len(texts)} 个嵌入向量...")
-                embeddings = embeddings_manager.embed_documents(texts)
+                embeddings = await asyncio.to_thread(
+                    embeddings_manager.embed_documents,
+                    texts
+                )
                 
                 if len(embeddings) != len(chunks):
                     raise KnowledgeBaseError(
@@ -1315,8 +1359,13 @@ class KnowledgeBaseManager:
                     model=kb.embedding_model,
                     base_url=settings.ollama_host
                 )
-                
-                query_vector = embeddings_manager.embed_query(query)
+
+                # 使用 asyncio.to_thread 在线程池中运行同步的 HTTP 请求
+                import asyncio
+                query_vector = await asyncio.to_thread(
+                    embeddings_manager.embed_query,
+                    query
+                )
                 
                 logger.debug(f"✓ 查询向量生成完成，维度: {len(query_vector)}")
                 

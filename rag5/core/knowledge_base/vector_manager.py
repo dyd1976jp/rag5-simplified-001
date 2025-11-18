@@ -222,24 +222,36 @@ class VectorStoreManager:
                 if not chunk_id:
                     chunk_id = str(uuid.uuid4())
                     chunk["id"] = chunk_id
-                
-                # 创建 payload（包含所有块的元数据）
+
+                # 将字符串 ID 转换为 UUID（Qdrant 要求 ID 是 UUID 或整数）
+                # 如果 chunk_id 是字符串格式（如 "file_xxx_chunk_0"），则生成 UUID
+                try:
+                    # 尝试将其解析为 UUID
+                    point_id = uuid.UUID(chunk_id)
+                except (ValueError, AttributeError):
+                    # 如果不是有效的 UUID，则使用字符串的 hash 生成一个确定性的 UUID
+                    # 这样相同的 chunk_id 总是会生成相同的 UUID
+                    namespace = uuid.UUID('6ba7b810-9dad-11d1-80b4-00c04fd430c8')  # DNS namespace
+                    point_id = uuid.uuid5(namespace, chunk_id)
+
+                # 创建 payload（包含所有块的元数据，包括原始的 chunk_id）
                 payload = {
+                    "chunk_id": chunk_id,  # 保存原始的字符串 ID 用于追踪
                     "text": chunk.get("text", ""),
                     "file_id": chunk.get("file_id", ""),
                     "source": chunk.get("source", ""),
                     "chunk_index": chunk.get("chunk_index", 0),
                     "kb_id": kb_id,  # 添加知识库 ID 用于过滤
                 }
-                
+
                 # 添加其他元数据
                 for key, value in chunk.items():
                     if key not in payload and key != "id":
                         payload[key] = value
-                
+
                 points.append(
                     PointStruct(
-                        id=chunk_id,
+                        id=str(point_id),  # 转换为字符串形式的 UUID
                         vector=embedding,
                         payload=payload
                     )

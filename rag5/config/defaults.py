@@ -20,6 +20,21 @@ DEFAULT_EMBED_MODEL = "bge-m3"
 # LLM 请求超时时间（秒）
 DEFAULT_LLM_TIMEOUT = 60
 
+# Ollama 嵌入请求超时时间（秒）
+DEFAULT_OLLAMA_TIMEOUT = 180
+
+# Ollama 批次大小
+DEFAULT_OLLAMA_BATCH_SIZE = 10
+
+# 嵌入后端类型（"ollama" 或 "lmstudio"）
+DEFAULT_EMBEDDING_BACKEND = "ollama"
+
+# LM Studio 服务地址
+DEFAULT_LM_STUDIO_HOST = "http://localhost:1234"
+
+# LM Studio 嵌入模型名称
+DEFAULT_LM_STUDIO_MODEL = "nomic-ai/nomic-embed-text-v1.5-GGUF"
+
 
 # ============================================================================
 # Qdrant 配置默认值
