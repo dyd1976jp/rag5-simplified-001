@@ -51,23 +51,27 @@ class SessionState:
         return st.session_state.messages
 
     @staticmethod
-    def add_message(role: str, content: str):
+    def add_message(role: str, content: str, retrieval_results: Optional[List[Dict[str, Any]]] = None):
         """
         添加一条消息到对话历史。
 
         Args:
             role: 消息角色（user 或 assistant）
             content: 消息内容
+            retrieval_results: 可选的检索结果列表（仅用于 assistant 消息）
 
         Example:
             >>> SessionState.add_message("user", "什么是 RAG？")
-            >>> SessionState.add_message("assistant", "RAG 是检索增强生成...")
+            >>> SessionState.add_message("assistant", "RAG 是检索增强生成...", retrieval_results=[...])
         """
         SessionState.initialize()
-        st.session_state.messages.append({
+        message = {
             "role": role,
             "content": content
-        })
+        }
+        if retrieval_results is not None and role == "assistant":
+            message["retrieval_results"] = retrieval_results
+        st.session_state.messages.append(message)
 
     @staticmethod
     def clear_messages():

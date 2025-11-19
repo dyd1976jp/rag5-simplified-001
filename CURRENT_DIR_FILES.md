@@ -21,12 +21,10 @@
 
 - `.DS_Store` – 项目文件。 ❗
 - `.env` – 项目文件。 ✅
-- `.env.backup.20251115_100404` – 项目文件。 ❗
 - `.env.example` – 项目文件。 ✅
 - `.gitignore` – 项目文件。 ❗
 - `AGENTS.md` – 项目文档或说明。 ❗
 - `CURRENT_DIR_FILES.md` – 项目文档或说明。 ❗
-- `FILE_INVENTORY.md` – 项目文档或说明。 ❗
 - `README.md` – 项目文档或说明。 ❗
 - `requirements.txt` – 纯文本资源。 ✅
 - `setup.py` – Python 模块实现。 ✅
@@ -129,45 +127,11 @@
 
 - `data/knowledge_bases.db` – 项目文件。 ❗
 
-## docs/
+## docs/ ❗
 
-- `docs/kb_1c7bd4cead564401ad4d779b107cf466/file_a6b722e761f84d0abce981d91a8edd3c.txt` – 纯文本资源。 ❗
-- `docs/kb_2131dc2b1a9f4098acd1b1a09bd4813c/file_050d5703fed447c988dcc20045d8c1ce.txt` – 纯文本资源。 ❗
-- `docs/kb_2535ca9bcfe14c26bce14ed106e022c3/file_92f9cbcc16bf48d095334be086685df6.txt` – 纯文本资源。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_1842b812b7e940689e8777b2b5e1709e.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_24de876e2d6d41bca307937a64e79897.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_34fad693a5be4995a0a247d0de7198d5.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_637e8c7c52294c55b8a62be463bc387d.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_6713af86b68e4f3483f67af66664edf1.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_676489bcb1a94c4d81edc6eed79225a7.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_6d9cf091078b4954be15b3b67d32eb68.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_8824951e04844a5da2ba83cb5ea2faf8.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_8e556d8145a945e98714fb2bff4ae4d3.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_a7bc4f0b885347869fafe5ab9b5bd10e.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_aafe175083254735a697ecfc15b7d3c7.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_b109d3766f434c48a2fbe3905c09b5fb.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_b5adf6c8fde34b849d65a5cb16212c50.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_bbb0555412064a2d9a6c1237bc169abe.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_c4bb6ff2dd014fcc8e88d55067625d5f.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_d285b5d928a94363a507cab545a40e86.pdf` – 项目文件。 ❗
-- `docs/kb_2873690d06dc4b5384e618d454ae5630/file_fd95fc469ac94d8bbf497e98c9a80144.pdf` – 项目文件。 ❗
-- `docs/kb_411aa0d9094b4dd9afe50c7a2a77f9ea/file_c7a304c28db143bfab825940cedf8510.txt` – 纯文本资源。 ❗
-- `docs/kb_65d64b0361d840c7887ddb35be351a2c/file_f256e26823a44e45bc2abe5cc6ea7a7a.txt` – 纯文本资源。 ❗
-- `docs/kb_8312aa9bcc7e48499e67fd6ff46db779/file_a591683600eb424cbdf57edf50538b28.txt` – 纯文本资源。 ❗
-- `docs/kb_a4666c8adf4d414a8966aed80f5fb38e/file_ba34ea2694c245fb8f3ec34b7b42a09c.txt` – 纯文本资源。 ❗
-- `docs/kb_a663b4dd5f694fb0a3710d4e0ff0dfe0/file_9cb18eeec75f4a899d5fd1d58b9a6b01.txt` – 纯文本资源。 ❗
-- `docs/kb_cfb5ff6e6a5b41dd91ae5ada56a9ea08/file_a95e886996604403abe9a361f399a860.txt` – 纯文本资源。 ❗
-- `docs/kb_e75ffecfb27b4b68abdf0b2fdd7bea0c/file_f1759287c28c4de7b94a15d523ad9edc.pdf` – 项目文件。 ❗
-- `docs/kb_e9a97edba2ec40e1ba4c2b01872e52be/file_271744df6e2447d58c999eee1e67ef36.txt` – 纯文本资源。 ❗
 
-## logs/
+## logs/ ❗
 
-- `logs/agent_reflections.log` – 项目文件。 ❗
-- `logs/conversation_context.log` – 项目文件。 ❗
-- `logs/fastapi.log` – 项目文件。 ❗
-- `logs/llm_interactions.log` – 项目文件。 ❗
-- `logs/streamlit.log` – 项目文件。 ❗
-- `logs/unified_flow.log` – 项目文件。 ❗
 
 ## rag5/
 
@@ -433,15 +397,8 @@
 - `rag5/utils/reflection_logger.py` – Python 模块实现。 ✅
 - `rag5/utils/structured_formatter.py` – Python 模块实现。 ✅
 
-## rag5_simplified.egg-info/
+## rag5_simplified.egg-info/ ❗ ❗ ❗
 
-- `rag5_simplified.egg-info/PKG-INFO` – 项目文件。 ❗
-- `rag5_simplified.egg-info/SOURCES.txt` – 纯文本资源。 ❗
-- `rag5_simplified.egg-info/dependency_links.txt` – 纯文本资源。 ❗
-- `rag5_simplified.egg-info/entry_points.txt` – 纯文本资源。 ❗
-- `rag5_simplified.egg-info/not-zip-safe` – 项目文件。 ❗
-- `rag5_simplified.egg-info/requires.txt` – 纯文本资源。 ❗
-- `rag5_simplified.egg-info/top_level.txt` – 纯文本资源。 ❗
 
 ## scripts/
 
@@ -463,148 +420,5 @@
 - `scripts/validate_performance.py` – Python 模块实现。 ✅
 - `scripts/validate_security.py` – Python 模块实现。 ✅
 
-## tests/
-
-- `tests/__init__.py` – Python 模块实现。 ❗
-- `tests/__pycache__/__init__.cpython-310.pyc` – 项目文件。 ❗
-- `tests/__pycache__/__init__.cpython-312.pyc` – 项目文件。 ❗
-- `tests/__pycache__/conftest.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/__pycache__/conftest.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/__pycache__/conftest.cpython-312-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/__pycache__/test_backward_compatibility.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/__pycache__/test_backward_compatibility.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/__pycache__/test_database_operations.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/__pycache__/test_documentation.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/__pycache__/test_documentation.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/__pycache__/test_e2e.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/__pycache__/test_e2e.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/__pycache__/test_kb_initialization.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/conftest.py` – Python 模块实现。 ❗
-- `tests/test_backward_compatibility.py` – Python 模块实现。 ❗
-- `tests/test_config/__init__.py` – Python 模块实现。 ❗
-- `tests/test_config/__pycache__/__init__.cpython-310.pyc` – 项目文件。 ❗
-- `tests/test_config/__pycache__/test_loader.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_config/__pycache__/test_loader.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_config/__pycache__/test_settings.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_config/__pycache__/test_settings.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_config/__pycache__/test_validator.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_config/__pycache__/test_validator.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_config/test_loader.py` – Python 模块实现。 ❗
-- `tests/test_config/test_settings.py` – Python 模块实现。 ❗
-- `tests/test_config/test_validator.py` – Python 模块实现。 ❗
-- `tests/test_core/__init__.py` – Python 模块实现。 ❗
-- `tests/test_core/__pycache__/__init__.cpython-310.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_agent.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_agent.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_errors.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_errors.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_history.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_history.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_kb_manager.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_kb_models.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_kb_provider.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_messages.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_messages.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_core/__pycache__/test_vector_manager.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_core/test_agent.py` – Python 模块实现。 ❗
-- `tests/test_core/test_errors.py` – Python 模块实现。 ❗
-- `tests/test_core/test_history.py` – Python 模块实现。 ❗
-- `tests/test_core/test_kb_manager.py` – Python 模块实现。 ❗
-- `tests/test_core/test_kb_models.py` – Python 模块实现。 ❗
-- `tests/test_core/test_kb_provider.py` – Python 模块实现。 ❗
-- `tests/test_core/test_messages.py` – Python 模块实现。 ❗
-- `tests/test_core/test_vector_manager.py` – Python 模块实现。 ❗
-- `tests/test_database_operations.py` – Python 模块实现。 ❗
-- `tests/test_documentation.py` – Python 模块实现。 ❗
-- `tests/test_e2e.py` – Python 模块实现。 ❗
-- `tests/test_flow_analyzer_manual.py` – Python 模块实现。 ❗
-- `tests/test_flow_logging_manual.py` – Python 模块实现。 ❗
-- `tests/test_ingestion/__init__.py` – Python 模块实现。 ❗
-- `tests/test_ingestion/__pycache__/__init__.cpython-310.pyc` – 项目文件。 ❗
-- `tests/test_ingestion/__pycache__/test_loaders.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_ingestion/__pycache__/test_loaders.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_ingestion/__pycache__/test_pipeline.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_ingestion/__pycache__/test_pipeline.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_ingestion/__pycache__/test_splitters.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_ingestion/__pycache__/test_splitters.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_ingestion/__pycache__/test_vectorizers.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_ingestion/__pycache__/test_vectorizers.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_ingestion/test_loaders.py` – Python 模块实现。 ❗
-- `tests/test_ingestion/test_pipeline.py` – Python 模块实现。 ❗
-- `tests/test_ingestion/test_splitters.py` – Python 模块实现。 ❗
-- `tests/test_ingestion/test_vectorizers.py` – Python 模块实现。 ❗
-- `tests/test_integration/__init__.py` – Python 模块实现。 ❗
-- `tests/test_integration/__pycache__/__init__.cpython-310.pyc` – 项目文件。 ❗
-- `tests/test_integration/__pycache__/test_e2e_logging.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_integration/__pycache__/test_e2e_logging.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_integration/__pycache__/test_flow_logging_e2e.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_integration/__pycache__/test_kb_agent_integration.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_integration/test_e2e_logging.py` – Python 模块实现。 ❗
-- `tests/test_integration/test_flow_logging_e2e.py` – Python 模块实现。 ❗
-- `tests/test_integration/test_kb_agent_integration.py` – Python 模块实现。 ❗
-- `tests/test_interfaces/__init__.py` – Python 模块实现。 ❗
-- `tests/test_interfaces/__pycache__/__init__.cpython-310.pyc` – 项目文件。 ❗
-- `tests/test_interfaces/__pycache__/test_api.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_interfaces/__pycache__/test_api.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_interfaces/__pycache__/test_kb_api.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_interfaces/test_api.py` – Python 模块实现。 ❗
-- `tests/test_interfaces/test_kb_api.py` – Python 模块实现。 ❗
-- `tests/test_interfaces/test_kb_components.py` – Python 模块实现。 ❗
-- `tests/test_interfaces/test_ui_config.py` – Python 模块实现。 ❗
-- `tests/test_interfaces/test_ui_performance.py` – Python 模块实现。 ❗
-- `tests/test_kb_initialization.py` – Python 模块实现。 ❗
-- `tests/test_performance/__init__.py` – Python 模块实现。 ❗
-- `tests/test_performance/__pycache__/__init__.cpython-310.pyc` – 项目文件。 ❗
-- `tests/test_performance/__pycache__/test_flow_logging_overhead.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_performance/test_flow_logging_overhead.py` – Python 模块实现。 ❗
-- `tests/test_tools/__init__.py` – Python 模块实现。 ❗
-- `tests/test_tools/__pycache__/__init__.cpython-310.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/__init__.cpython-312.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/test_embeddings.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/test_embeddings.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/test_embeddings.cpython-312-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/test_registry.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/test_registry.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/test_search.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/test_search.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/test_vectordb.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_tools/__pycache__/test_vectordb.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_tools/test_embeddings.py` – Python 模块实现。 ❗
-- `tests/test_tools/test_registry.py` – Python 模块实现。 ❗
-- `tests/test_tools/test_search.py` – Python 模块实现。 ❗
-- `tests/test_tools/test_vectordb.py` – Python 模块实现。 ❗
-- `tests/test_utils/__init__.py` – Python 模块实现。 ❗
-- `tests/test_utils/__pycache__/__init__.cpython-310.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/__init__.cpython-312.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_async_writer.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_async_writer.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_context_logger.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_context_logger.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_embedding_models.cpython-312-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_flow_analyzer.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_flow_formatter.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_flow_logger.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_flow_logger_integration.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_llm_logger.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_llm_logger.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_llm_wrapper.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_llm_wrapper.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_redactor.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_redactor.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_reflection_logger.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_reflection_logger.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_structured_formatter.cpython-310-pytest-7.4.4.pyc` – 项目文件。 ❗
-- `tests/test_utils/__pycache__/test_structured_formatter.cpython-310-pytest-9.0.0.pyc` – 项目文件。 ❗
-- `tests/test_utils/test_async_writer.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_context_logger.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_embedding_models.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_flow_analyzer.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_flow_formatter.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_flow_logger.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_flow_logger_integration.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_llm_logger.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_llm_wrapper.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_redactor.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_reflection_logger.py` – Python 模块实现。 ❗
-- `tests/test_utils/test_structured_formatter.py` – Python 模块实现。 ❗
+## tests/ ❗
 

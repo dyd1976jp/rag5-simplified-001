@@ -32,7 +32,7 @@ def render_message(message: Dict[str, str]):
     渲染单条消息。
 
     Args:
-        message: 包含 role 和 content 的消息字典
+        message: 包含 role 和 content 的消息字典，可能还包含 retrieval_results
 
     Example:
         >>> message = {"role": "user", "content": "什么是 RAG？"}
@@ -40,6 +40,29 @@ def render_message(message: Dict[str, str]):
     """
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+
+        # 如果是助手消息且有检索结果，显示引用来源
+        if message["role"] == "assistant" and "retrieval_results" in message:
+            retrieval_results = message["retrieval_results"]
+            if retrieval_results:
+                with st.expander(f"📚 引用来源 ({len(retrieval_results)} 个)", expanded=False):
+                    for idx, result in enumerate(retrieval_results, 1):
+                        source = result.get("source") or result.get("metadata", {}).get("source", "文档")
+                        score = result.get("score", 0.0)
+                        st.markdown(f"**{idx}. {source}** · 相似度: {score:.4f}")
+
+                        snippet = result.get("text", "").strip().replace("\n", " ")
+                        if snippet:
+                            if len(snippet) > 300:
+                                snippet = snippet[:300] + "…"
+                            st.markdown(f"> {snippet}")
+
+                        file_id = result.get("file_id", "-")
+                        chunk_index = result.get("chunk_index", "-")
+                        st.caption(f"文件: {file_id} · 块索引: {chunk_index}")
+
+                        if idx < len(retrieval_results):
+                            st.divider()
 
 
 def render_chat_history(messages: List[Dict[str, str]]):

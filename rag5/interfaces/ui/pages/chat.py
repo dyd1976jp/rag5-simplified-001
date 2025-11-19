@@ -150,8 +150,20 @@ def render_chat_interface():
                     else:
                         st.markdown(response)
 
-                    # 添加助手响应到历史
-                    SessionState.add_message("assistant", response)
+                    # 获取检索结果
+                    retrieval_context = SessionState.get_last_retrieval_context()
+                    retrieval_results = None
+                    if (
+                        clean_query
+                        and retrieval_context
+                        and retrieval_context.get("query") == clean_query
+                        and retrieval_context.get("kb_id")
+                        and not retrieval_context.get("error")
+                    ):
+                        retrieval_results = retrieval_context.get("results", [])
+
+                    # 添加助手响应到历史（包含检索结果）
+                    SessionState.add_message("assistant", response, retrieval_results=retrieval_results)
                 else:
                     # 如果没有响应，触发重新运行以显示错误
                     st.rerun()

@@ -87,7 +87,6 @@ def _get_kb_manager():
     if _kb_manager is None:
         try:
             from rag5.core.knowledge_base import KnowledgeBaseManager
-            from rag5.core.knowledge_base.vector_manager import VectorStoreManager
             from rag5.tools.vectordb import QdrantManager
             from pathlib import Path
             
@@ -97,13 +96,10 @@ def _get_kb_manager():
             
             # 创建 Qdrant 管理器
             qdrant_manager = QdrantManager(url=settings.qdrant_url)
-            
-            # 创建向量存储管理器
-            vector_manager = VectorStoreManager(qdrant_manager)
-            
+
             _kb_manager = KnowledgeBaseManager(
                 db_path=db_path,
-                vector_manager=vector_manager,
+                qdrant_manager=qdrant_manager,
                 file_storage_path=file_storage_path
             )
             

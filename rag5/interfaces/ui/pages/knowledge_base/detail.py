@@ -1106,10 +1106,10 @@ def render_retrieval_test_tab(kb_id: str, api_client: KnowledgeBaseAPIClient):
                             field_display = field.replace('_', ' ').title()
                             st.caption(f"**{field_display}:** {value}")
                         col_idx += 1
-                    
-                    # Show full metadata as JSON in a collapsible section
-                    with st.expander("🔍 查看完整元数据 (JSON)", expanded=False):
-                        st.json(metadata)
+
+                    # Show full metadata as JSON
+                    st.markdown("**完整元数据 (JSON):**")
+                    st.json(metadata)
                 else:
                     st.caption("_无元数据_")
                 
